@@ -1,0 +1,632 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS, Quartz2d, UIColorPicker, colorWheel,  wheel color picker, color picker, ios color picker, core graphics" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Several weeks ago, I wrote a custome color picker for iphone app, I mainly use Quartz2d Graphics drawing the view. The function is simple, just allow user to select a color. Today I will make a summar">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Draw your own ColorPicker for iOS">
+<meta property="og:url" content="http://yoursite.com/2013/07/05/2013-07-05-draw-your-own-colorpicker-for-ios/index.html">
+<meta property="og:site_name" content="KISS">
+<meta property="og:description" content="Several weeks ago, I wrote a custome color picker for iphone app, I mainly use Quartz2d Graphics drawing the view. The function is simple, just allow user to select a color. Today I will make a summar">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/GridColorPicker.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/WheelColorPicker.png">
+<meta property="og:image" content="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Hsl-hsv_models.svg/600px-Hsl-hsv_models.svg.png">
+<meta property="og:updated_time" content="2016-06-18T06:08:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Draw your own ColorPicker for iOS">
+<meta name="twitter:description" content="Several weeks ago, I wrote a custome color picker for iphone app, I mainly use Quartz2d Graphics drawing the view. The function is simple, just allow user to select a color. Today I will make a summar">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/GridColorPicker.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2013/07/05/2013-07-05-draw-your-own-colorpicker-for-ios/"/>
+
+  <title> Draw your own ColorPicker for iOS | KISS </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">KISS</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">尊重 谦虚 宽容</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Draw your own ColorPicker for iOS
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2013-07-05T00:00:00+08:00" content="2013-07-05">
+              2013-07-05
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Several weeks ago, I wrote a custome color picker for iphone app, I mainly use Quartz2d Graphics drawing the view. The function is simple, just allow user to select a color. Today I will make a summary for this work, you can download the demo project <a href="https://github.com/Charlesjean/ColorPickerViewTest.git" target="_blank" rel="external">here</a>. You need XCode4.6 to compile this project.</p>
+<p>There are two types of Color picker. One is GridColorPicker which contains colored rectangles in rows and columns. Each rectangle in grid represents one color, user can click one rect to make a selection. The other is WheelColorPicker, all color is in a circle, user can click to select a hue, then use a vertical bar to select a color.</p>
+<p>Here are sceenshot(you can use button below to change between these two views).The background color changes with color user selected.</p>
+<p><img src="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/GridColorPicker.png" alt="gridColorPicker">          <img src="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/WheelColorPicker.png" alt="WheelColorPicker"><br></p>
+<p>###Grid Color Picker<br>For grid color picker, we just need to first get positions of all rects and corresponding color. Then draw these colored rects in <code>drawRect</code> method. Code snippet(not complicated, you can refer to the source code for detail):<br><br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)drawRect:(<span class="built_in">CGRect</span>)rect</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">CGContextRef</span> context = <span class="built_in">UIGraphicsGetCurrentContext</span>();</span><br><span class="line">    <span class="built_in">CGContextSetFillColorWithColor</span>(context, [<span class="built_in">UIColor</span> grayColor].CGColor);</span><br><span class="line">    <span class="built_in">CGContextFillRect</span>(context, rect);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> row = <span class="number">0</span>; row &lt; COLOR_GRID_ROW; ++row) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> col = <span class="number">0</span>; col &lt; COLOR_GRID_COL; ++col) &#123;</span><br><span class="line">            <span class="built_in">UIColor</span>* color = [<span class="keyword">self</span> colorFromInt:LESS_COLOR_TABLE[row * COLOR_GRID_COL + col ]];</span><br><span class="line">            <span class="built_in">CGRect</span> colorRect = [[colRectArray objectAtIndex:COLOR_GRID_COL * row + col] <span class="built_in">CGRectValue</span>];</span><br><span class="line">            <span class="built_in">CGContextSetFillColorWithColor</span>(context, color.CGColor);</span><br><span class="line">            <span class="built_in">CGContextAddRect</span>(context, colorRect);</span><br><span class="line">            <span class="built_in">CGContextFillPath</span>(context);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><a id="more"></a></p>
+<p>###Wheel Color Picker<br>The color wheel is a little complicated. You should first understand the <a href="http://zh.wikipedia.org/wiki/HSL%E5%92%8CHSV%E8%89%B2%E5%BD%A9%E7%A9%BA%E9%97%B4" target="_blank" rel="external">HSL color space</a>. I will explain basic HSL concepts, if can refer to above link for accurate info.<br><br>Like RGB color space, HSL also represents three components of color, that is hue, saturation and lightness. So HSL color space is also three-dimensional space, actually it is cylindrical geometry. In each cylinder, the <code>angle</code> around the central vertical axis corresponds to ‘hue’, the <code>distance</code> from the axis corresponds to ‘saturation’ and the <code>distance along the axis</code> corresponds to ‘lightness’ or ‘brightness’. Check image below<br><br><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Hsl-hsv_models.svg/600px-Hsl-hsv_models.svg.png" alt=""></p>
+<p>With the definition of HSL, we can calculate color for each position of the wheel with the following code:<br><br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> xdis = i - center.x;</span><br><span class="line">   <span class="keyword">float</span> ydis = j - center.y;</span><br><span class="line">   <span class="keyword">float</span> hue =atan2f(xdis, ydis);</span><br><span class="line">   <span class="keyword">if</span> (hue &lt; <span class="number">0</span>) &#123;</span><br><span class="line">      hue += <span class="number">2</span>* M_PI;</span><br><span class="line">    &#125;</span><br><span class="line">   hue = hue / (<span class="number">2</span>*M_PI);</span><br><span class="line">   <span class="keyword">float</span> saturation = sqrtf(xdis * xdis + ydis * ydis) / radius;</span><br><span class="line">   <span class="keyword">float</span> brightness = <span class="number">1.0</span>;</span><br><span class="line">   <span class="built_in">UIColor</span>* color = [<span class="built_in">UIColor</span> colorWithHue:hue saturation:saturation brightness:brightness alpha:<span class="number">1.0</span>];</span><br></pre></td></tr></table></figure></p>
+<p>###Improvement<br>If we draw the color wheel in <code>drawRect</code> method of our view, then everytime we update the view, we need to recaculate the color for each pixel and the calculation is time-consuming. To improve the performance, we need first to draw the color to an image, and draw the image to screen in <code>drawrect</code>, so we only need to do the calculation once, update the view many times with good performance. Quartz2d has bitmap context graphics which can be used to draw pixels into an image. Code is like below, you can refer to ios document for more information.<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">size_t width = COLOR_PANE_WIDTH;</span><br><span class="line"> size_t height = COLOR_PANE_HEIGHT;</span><br><span class="line"> size_t bitsPerComponent = <span class="number">8</span>;</span><br><span class="line"> size_t bytesPerRow = <span class="number">4</span> * COLOR_PANE_WIDTH;</span><br><span class="line"> <span class="keyword">void</span>* data = malloc(bytesPerRow * COLOR_PANE_HEIGHT);</span><br><span class="line"> <span class="built_in">CGColorSpaceRef</span> colorSpace = <span class="built_in">CGColorSpaceCreateDeviceRGB</span>();</span><br><span class="line"> <span class="built_in">CGContextRef</span> bitmapContext = <span class="built_in">CGBitmapContextCreate</span>(data, width, height, bitsPerComponent, bytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast);</span><br><span class="line"> </span><br><span class="line"> <span class="keyword">float</span> halfWidth = COLOR_PANE_WIDTH / <span class="number">2.0</span>f;</span><br><span class="line"> <span class="keyword">float</span> halfHeight = COLOR_PANE_HEIGHT / <span class="number">2.0</span>f;</span><br><span class="line"> <span class="keyword">float</span> radius = halfWidth;</span><br><span class="line"> <span class="built_in">CGPoint</span> center;</span><br><span class="line"> center.x = COLOR_PANE_WIDTH / <span class="number">2.0</span>f;</span><br><span class="line"> center.y = COLOR_PANE_HEIGHT / <span class="number">2.0</span>f;</span><br><span class="line"> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; COLOR_PANE_WIDTH; ++i) &#123;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; COLOR_PANE_HEIGHT; ++j) &#123;</span><br><span class="line">         <span class="keyword">float</span> xdis = i - center.x;</span><br><span class="line">         <span class="keyword">float</span> ydis = j - center.y;</span><br><span class="line">         <span class="keyword">float</span> hue =atan2f(xdis, ydis);</span><br><span class="line">         <span class="keyword">if</span> (hue &lt; <span class="number">0</span>) &#123;</span><br><span class="line">             hue += <span class="number">2</span>* M_PI;</span><br><span class="line">         &#125;</span><br><span class="line">         hue = hue / (<span class="number">2</span>*M_PI);</span><br><span class="line">         <span class="keyword">float</span> saturation = sqrtf(xdis * xdis + ydis * ydis) / radius;</span><br><span class="line">         <span class="keyword">float</span> brightness = <span class="number">1.0</span>;</span><br><span class="line">         <span class="built_in">UIColor</span>* color = [<span class="built_in">UIColor</span> colorWithHue:hue saturation:saturation brightness:brightness alpha:<span class="number">1.0</span>];</span><br><span class="line">         <span class="built_in">CGContextSetFillColorWithColor</span>(bitmapContext, color.CGColor);</span><br><span class="line">         <span class="built_in">CGContextAddRect</span>(bitmapContext, <span class="built_in">CGRectMake</span>(i, j, <span class="number">1</span>, <span class="number">1</span>));</span><br><span class="line">         <span class="built_in">CGContextFillPath</span>(bitmapContext);</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> mpWheelColorImg = [[<span class="built_in">UIImage</span> alloc] initWithCGImage:<span class="built_in">CGBitmapContextCreateImage</span>(bitmapContext)];</span><br><span class="line"> <span class="built_in">CGColorSpaceRelease</span>(colorSpace);</span><br><span class="line"> <span class="keyword">char</span>* data2 = <span class="built_in">CGBitmapContextGetData</span>(bitmapContext);</span><br><span class="line"> <span class="built_in">CGContextRelease</span>(bitmapContext);</span><br><span class="line"> <span class="keyword">if</span> (data2 != <span class="literal">NULL</span>) &#123;</span><br><span class="line">     free(data2);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>Wish this will help you, if you have any question or there’s any errors in this blog, please leave a comment :)</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/Quartz2d/" rel="tag">#Quartz2d</a>
+          
+            <a href="/tags/UIColorPicker/" rel="tag">#UIColorPicker</a>
+          
+            <a href="/tags/colorWheel/" rel="tag">#colorWheel</a>
+          
+            <a href="/tags/wheel-color-picker/" rel="tag">#wheel color picker</a>
+          
+            <a href="/tags/color-picker/" rel="tag">#color picker</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2012/12/10/2012-12-10-uitextview/" rel="next" title="UITextView">
+                <i class="fa fa-chevron-left"></i> UITextView
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2013/07/13/2013-07-13-memory-usage-investigate-of-ios-view-render/" rel="prev" title="Memory Usage Investigate of iOS View Render">
+                Memory Usage Investigate of iOS View Render <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Charles" />
+          <p class="site-author-name" itemprop="name">Charles</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Charles</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
