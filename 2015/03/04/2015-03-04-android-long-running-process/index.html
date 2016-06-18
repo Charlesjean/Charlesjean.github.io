@@ -1,0 +1,611 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android, android process priority, long running service, startForeground" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="与Linux系统相同，Android中每一个process也有一个自己的优先级，在PC系统中，进程或者线程的优先级决定了其获得运行资源的多少。而像iOS与Android系统中，优先级除了决定进程获得资源的多少之外，还决定了当系统处于资源紧张状态时，进程所能存活的时间。因为在Mobile操作系统中，都有OOM处理机制，即当系统资源紧张时，OS会根据一定的策略选择kill一掉一些进程，从而使系统拥有更">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android OOM与常驻内存进程">
+<meta property="og:url" content="http://yoursite.com/2015/03/04/2015-03-04-android-long-running-process/index.html">
+<meta property="og:site_name" content="KISS">
+<meta property="og:description" content="与Linux系统相同，Android中每一个process也有一个自己的优先级，在PC系统中，进程或者线程的优先级决定了其获得运行资源的多少。而像iOS与Android系统中，优先级除了决定进程获得资源的多少之外，还决定了当系统处于资源紧张状态时，进程所能存活的时间。因为在Mobile操作系统中，都有OOM处理机制，即当系统资源紧张时，OS会根据一定的策略选择kill一掉一些进程，从而使系统拥有更">
+<meta property="og:updated_time" content="2016-06-18T05:33:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android OOM与常驻内存进程">
+<meta name="twitter:description" content="与Linux系统相同，Android中每一个process也有一个自己的优先级，在PC系统中，进程或者线程的优先级决定了其获得运行资源的多少。而像iOS与Android系统中，优先级除了决定进程获得资源的多少之外，还决定了当系统处于资源紧张状态时，进程所能存活的时间。因为在Mobile操作系统中，都有OOM处理机制，即当系统资源紧张时，OS会根据一定的策略选择kill一掉一些进程，从而使系统拥有更">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/03/04/2015-03-04-android-long-running-process/"/>
+
+  <title> Android OOM与常驻内存进程 | KISS </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">KISS</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">尊重 谦虚 宽容</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android OOM与常驻内存进程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-03-04T19:13:14+08:00" content="2015-03-04">
+              2015-03-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>与Linux系统相同，Android中每一个process也有一个自己的优先级，在PC系统中，进程或者线程的优先级决定了其获得运行资源的多少。而像iOS与Android系统中，优先级除了决定进程获得资源的多少之外，还决定了当系统处于资源紧张状态时，进程所能存活的时间。因为在Mobile操作系统中，都有OOM处理机制，即当系统资源紧张时，OS会根据一定的策略选择kill一掉一些进程，从而使系统拥有更多的资源可以运行下去，或者使优先级更高的进程能够有足够的资源运行。我们先从OOM机制说起。</p>
+<a id="more"></a>
+<h4 id="OOM与Android-Low-Memory-Killer"><a href="#OOM与Android-Low-Memory-Killer" class="headerlink" title="OOM与Android Low Memory Killer"></a>OOM与Android Low Memory Killer</h4><p>在多任务操作系统中，多个进程同时进驻内存当中，OS通过内存分页与换页机制保证各个进程能够得到足够的内存，以便继续运行下去。但是随着进驻内存的进程的增多，以及各个进程对内存需求的增加，系统可能在某一时刻达到一种状态，即<code>当进程A要求需要请求新的内存页时，OS无法找到空闲的内存页分配给它，也就是说，当前所有的内存页均处于Dirty状态，而且无法被置换出内存</code>，在这种情况下，OS的OOM机制将会起作用。OOM会根据一定的规则，选出‘优先级’最低的进程，将其杀掉，从而释放内存供系统使用。</p>
+<p>可以看到，OOM能够保证系统在资源紧张的情况下继续运行下去，但是在iOS与Android系统当中，这种机制的OOM扔不能满足需求。</p>
+<p>为了改进用户体验，Android的background app是处于内存当中的，以便用户能够快速的在app间切换，并且Android提倡保存app的当前状态，以使用户在回到app中时，页面的状态与用户离开时一致。为了达到这种友好的体验，单纯的OOM便显示出了不足。因为在OS的OOM机制被促发时，内存中以没有可用内存页，及app无法继续运行，无法保存自己的状态。因此，Android在Linuxe的OOM Killer之外，引入了 Low-Memory Killer。LMK的运行机制如下：</p>
+<pre><code>Low memory driver中定义了不同的内存使用阈值，当内存使用超过预定的阈值时，系统就会向process发出相关信息（memory warning），app在收到memory warning后，可以保存自己的当前状态；如果系统资源进一步紧张，low memory killer就会选择kill一些background process
+</code></pre><h4 id="Android常驻内存进程"><a href="#Android常驻内存进程" class="headerlink" title="Android常驻内存进程"></a>Android常驻内存进程</h4><p>哪些app是可以优先被kill掉，而哪些是需要保留的，Android应该是综合考虑了多种因素（优先级、app类型、LRU？）。大致原则是，foreground app永远是优先级最高的，基本上不会被kill掉，除非系统都要关闭了:(;系统进程，相当于kernel级别的进程一定需要保留。</p>
+<p>在我们日常的app开发中，我们无法保证app一直处于最前端，但是有些service，像音乐播放、屏幕录像等，又需要常驻内存，这时我们就需要保证这种service一致处于前台状态，及一直拥有<code>foreground priority</code>, <strong>我们可以通过<code>startForeground()</code>方法与<code>Notification</code>结合来达到此目的</strong>。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/02/13/2013-12-29-iOS-Concurrent-Programming/" rel="next" title="iOS Concurrent Programming:GCD">
+                <i class="fa fa-chevron-left"></i> iOS Concurrent Programming:GCD
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/05/09/2015-05-09-yun-xing-shi-xiu-gai-dexzhi-xing-dai-ma/" rel="prev" title="Android运行时修改dex文件执行字节码">
+                Android运行时修改dex文件执行字节码 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Charles" />
+          <p class="site-author-name" itemprop="name">Charles</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#OOM与Android-Low-Memory-Killer"><span class="nav-number">1.</span> <span class="nav-text">OOM与Android Low Memory Killer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Android常驻内存进程"><span class="nav-number">2.</span> <span class="nav-text">Android常驻内存进程</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Charles</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

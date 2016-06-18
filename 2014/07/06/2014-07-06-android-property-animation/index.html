@@ -1,0 +1,612 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android, animation, property animation, 属性动画，iOS vs android" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="与iOS相比Android中的动画稍逊一筹。在iOS中，View属性的改变在大多数时间会自动触发相应的动画，比如view位置的移动，view透明度的变化等，都会通过动画的形式展现出来，这样很容易带给用户很好的体验，使用户感觉到系统的行为是流畅而且连贯的；但是在Android系统中，无论是OS自带的app，还是第三方的app，很少有表现流畅的动画，界面之间的的切换往往不能给人连贯的感觉，而是瞬间内容">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Property Animation">
+<meta property="og:url" content="http://yoursite.com/2014/07/06/2014-07-06-android-property-animation/index.html">
+<meta property="og:site_name" content="KISS">
+<meta property="og:description" content="与iOS相比Android中的动画稍逊一筹。在iOS中，View属性的改变在大多数时间会自动触发相应的动画，比如view位置的移动，view透明度的变化等，都会通过动画的形式展现出来，这样很容易带给用户很好的体验，使用户感觉到系统的行为是流畅而且连贯的；但是在Android系统中，无论是OS自带的app，还是第三方的app，很少有表现流畅的动画，界面之间的的切换往往不能给人连贯的感觉，而是瞬间内容">
+<meta property="og:image" content="http://developer.android.com/images/animation/valueanimator.png">
+<meta property="og:updated_time" content="2016-06-18T05:38:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android Property Animation">
+<meta name="twitter:description" content="与iOS相比Android中的动画稍逊一筹。在iOS中，View属性的改变在大多数时间会自动触发相应的动画，比如view位置的移动，view透明度的变化等，都会通过动画的形式展现出来，这样很容易带给用户很好的体验，使用户感觉到系统的行为是流畅而且连贯的；但是在Android系统中，无论是OS自带的app，还是第三方的app，很少有表现流畅的动画，界面之间的的切换往往不能给人连贯的感觉，而是瞬间内容">
+<meta name="twitter:image" content="http://developer.android.com/images/animation/valueanimator.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2014/07/06/2014-07-06-android-property-animation/"/>
+
+  <title> Android Property Animation | KISS </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">KISS</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">尊重 谦虚 宽容</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android Property Animation
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-07-06T09:31:25+08:00" content="2014-07-06">
+              2014-07-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>与iOS相比Android中的动画稍逊一筹。在iOS中，View属性的改变在大多数时间会自动触发相应的动画，比如view位置的移动，view透明度的变化等，都会通过动画的形式展现出来，这样很容易带给用户很好的体验，使用户感觉到系统的行为是流畅而且连贯的；但是在Android系统中，无论是OS自带的app，还是第三方的app，很少有表现流畅的动画，界面之间的的切换往往不能给人连贯的感觉，而是瞬间内容的改变，比如Expandable List View的Group展开，完全没有动画效果，不得不说确实很不友好。</p>
+<p>产生这种不同的原因可以说有几个方面：<br><br> 首先，从系统机制来看，iOS将动画融入到了系统的各个方面，当我们对iOS中View的属性改变时，很多动画就会被自动触发；而Android如果想有动画效果，就必须由开发人员实现。<br><br> 再者，在使用iOS的过程中，用户已经习惯了各种友好的动画，作为一名开发者，在开发中会自然而然的将动画考虑在内，开发者主观上就将动画作为判断app质量的一个方面；而在Android中，带有友好动画的app很少，因此大部分开发者也就没有重视动画效果（开发者果真都是懒惰的啊）。<br><br> 第三，iOS中提供的动画框架对于开发者非常友好，Core Animation除了具有强大的功能，有好的接口和文档使开发者用起来得心应手；Android虽然也提供了多种不同的动画机制，但是很多看起来简单并且普遍的动画，比如ExpandableListView 中Group展开的动画，实现起来确实比较麻烦。<br><br>不过用户友好的、有意义的动画已经包含在google提出的Material Design中，下一代的Android L应该在动画方面会有很大的改善，但是app由于需要兼容不同版本的Android，想要完全改变android app在动画方面的表现还需要不短的时间。</p>
+<a id="more"></a>
+<p>Android中其实也提供了多种的动画机制，包括View Animation，Drawable Animation 和 <a href="http://developer.android.com/guide/topics/graphics/prop-animation.html" target="_blank" rel="external">Property Animation</a>。其中，property animation提供给我们最灵活的接口，可以实现任何自定义的属性的动画，在指定了动画的时间和插值方式后，系统接口会自动在每一帧为我们产生对应的属性值，从而实现动画效果。基本的property animation流程如下：<br><br><img src="http://developer.android.com/images/animation/valueanimator.png" alt=""><br><br>本文利用Property Animation实现以下动画<a href="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/2014-7-6%2010-13-00.mp4" target="_blank" rel="external">链接</a><br><br><div class="video-container"><iframe src="//player.vimeo.com/video/171185640" frameborder="0" allowfullscreen></iframe></div><br></p>
+<p>与Property Animation相关的类主要为<code>ValueAnimator</code>和<code>ObjectAnimator</code>,与动画类配合使用的还有<code>Animator.AnimatorListener</code>和<code>ValueAnimator.AnimatorUpdateListener</code>。Animator类是我们可以使用的动画类，包含了动画所需的元素：动画时间，差值方法，属性的起始值和终止值等；对应的Listener类，则提供了我们监听动画过程的接口，本例的动画代码结构如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//this method will start the animation, animator is instance of ValueAnimator class</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startAnimation</span><span class="params">()</span></span><br><span class="line">		</span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.animator = ValueAnimator.ofFloat(<span class="number">0</span>, <span class="number">1.0f</span>);</span><br><span class="line">			<span class="keyword">this</span>.animator.setDuration(duration);</span><br><span class="line">			<span class="keyword">this</span>.animator.addUpdateListener(<span class="keyword">this</span>);</span><br><span class="line">			<span class="keyword">this</span>.animator.start();</span><br><span class="line">		&#125;</span><br><span class="line"><span class="comment">//this callback will be called for every frame of the animation</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator animation)</span> </span>&#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		    <span class="comment">//here we will redrawn the viewers according to the 	</span></span><br><span class="line">            <span class="comment">//aniamtion.getAnimatedValue();</span></span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure><br><br><br>我们指定了animation的初始值0和最终值1，在<code>duration</code>的时间内，系统会自动利用线性差值（默认），产生每一帧的animation对应的值，并且利用property animation框架，我们无须自己处理帧率，系统默认以每10ms的间隔来生成每一帧。<br></p>
+<p>我们可以看到，很简单的代码就形成了不错的动画，可以说Android提供的接口还是不错的，作为一名Programmer，有时候主动性强一些往往可以使软件质量获得不错的提升。</p>
+<p>期待Android L带来的改变，但是个人真的非常不喜欢Android L中的软键盘，为什么Home键要用一个’圈’？？？</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/06/18/2014-06-18-android-sqlite-demo/" rel="next" title="Android SQLite Demo">
+                <i class="fa fa-chevron-left"></i> Android SQLite Demo
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/07/06/2014-07-06-android-framelayout-tutorial/" rel="prev" title="Android UI设计中FrameLayout的使用">
+                Android UI设计中FrameLayout的使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Charles" />
+          <p class="site-author-name" itemprop="name">Charles</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Charles</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

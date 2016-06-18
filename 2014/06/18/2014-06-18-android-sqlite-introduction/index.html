@@ -1,0 +1,645 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android, SQLite, android sqlite tutorial" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="SQLite 概述与PC比较，移动平台在可用内存和处理器计算能力方面仍有不足，SQLite作为一个轻量级的数据库，由于自身体积小巧，占用内存少等原因成为了诸多移动系统支持的主要数据库，Android，iOS，Blackberry都对SQLite有很好的支持。
+
+易于使用
+内存占用低
+可以免费使用
+
+无疑是SQLite成为移动平台首选的主要原因。作为数据库Library，SQLite的大小不到500">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Sqlite（一）">
+<meta property="og:url" content="http://yoursite.com/2014/06/18/2014-06-18-android-sqlite-introduction/index.html">
+<meta property="og:site_name" content="KISS">
+<meta property="og:description" content="SQLite 概述与PC比较，移动平台在可用内存和处理器计算能力方面仍有不足，SQLite作为一个轻量级的数据库，由于自身体积小巧，占用内存少等原因成为了诸多移动系统支持的主要数据库，Android，iOS，Blackberry都对SQLite有很好的支持。
+
+易于使用
+内存占用低
+可以免费使用
+
+无疑是SQLite成为移动平台首选的主要原因。作为数据库Library，SQLite的大小不到500">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/sqlite_type.png">
+<meta property="og:updated_time" content="2016-06-18T05:40:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android Sqlite（一）">
+<meta name="twitter:description" content="SQLite 概述与PC比较，移动平台在可用内存和处理器计算能力方面仍有不足，SQLite作为一个轻量级的数据库，由于自身体积小巧，占用内存少等原因成为了诸多移动系统支持的主要数据库，Android，iOS，Blackberry都对SQLite有很好的支持。
+
+易于使用
+内存占用低
+可以免费使用
+
+无疑是SQLite成为移动平台首选的主要原因。作为数据库Library，SQLite的大小不到500">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/sqlite_type.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2014/06/18/2014-06-18-android-sqlite-introduction/"/>
+
+  <title> Android Sqlite（一） | KISS </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">KISS</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">尊重 谦虚 宽容</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android Sqlite（一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-06-18T21:33:11+08:00" content="2014-06-18">
+              2014-06-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="SQLite-概述"><a href="#SQLite-概述" class="headerlink" title="SQLite 概述"></a>SQLite 概述</h3><p>与PC比较，移动平台在可用内存和处理器计算能力方面仍有不足，SQLite作为一个轻量级的数据库，由于自身体积小巧，占用内存少等原因成为了诸多移动系统支持的主要数据库，Android，iOS，Blackberry都对SQLite有很好的支持。</p>
+<ul>
+<li>易于使用</li>
+<li>内存占用低</li>
+<li>可以免费使用</li>
+</ul>
+<p>无疑是SQLite成为移动平台首选的主要原因。作为数据库Library，SQLite的大小不到500K，核心功能库不到300K，运行时需要的最小栈空间仅为4K,要求堆空间也只有100K。这些无疑对嵌入式系统充满了诱惑，可以说是手机、PDA和MP3等类似设备的首选。虽然SQLite是可以免费使用，但是代码的质量没有因此而受影响，每一个SQLite发布版本都通过了很严格的测试，在SQLite的官网上我们可以看到下面这段话，让人对这个开源团队肃然起敬：</p>
+<p>We the developers hope that you find SQLite useful and we charge you to use it well: to make good and beautiful products that are fast, reliable, and simple to use. Seek forgiveness for yourself as you forgive others. And just as you have received SQLite for free, so also freely give, paying the debt forward.</p>
+<h3 id="SQLite的特性"><a href="#SQLite的特性" class="headerlink" title="SQLite的特性"></a>SQLite的特性</h3><p>与传统的数据库系统相比，SQLite有很多能够吸引嵌入式设备的特性，</p>
+<ul>
+<li>不像多数的PC数据库系统，SQLite没有Server的概念</li>
+<li>SQLite将所有的数据保存在同一个文件当中</li>
+<li>相对于大型数据库，SQLite只支持部分的数据类型</li>
+<li>SQLite中对于字段的长度没有限制</li>
+<li>SQLite是跨平台的（64位与32位，大端与小端系统）<a id="more"></a>
+<h4 id="SQLite没有Server的概念"><a href="#SQLite没有Server的概念" class="headerlink" title="SQLite没有Server的概念"></a>SQLite没有Server的概念</h4>与其说SQLite是数据库系统，不如说SQLite是用于操作磁盘文件的库文件，我们在使用中不需要对数据库进行配置，没有用户权限以及访问权限等限制，因此SQLite的使用更类似于fwrite()操作，无须JDBC等支持。</li>
+</ul>
+<h4 id="SQLite的数据类型"><a href="#SQLite的数据类型" class="headerlink" title="SQLite的数据类型"></a>SQLite的数据类型</h4><p>下表中列出来SQLite支持的数据类型：<br><img src="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/sqlite_type.png" alt=""></p>
+<p>在支持的类型中缺少常用的DATETIME与Boolean， boolean我们可以使用INTEGER来代替，在接下来的代码中，我会示意如果模拟DATETIME类型。</p>
+<h4 id="SQLite对字段长度没有限制"><a href="#SQLite对字段长度没有限制" class="headerlink" title="SQLite对字段长度没有限制"></a>SQLite对字段长度没有限制</h4><p>不想SQL Server等数据库，支持VARCHAR等类型，限制了表中某列字段的长度，SQLite中所有的String都是TEXT类型，而该类型并没有字符串长度的限制，因此我们在使用时需要在代码中管理对字段长度的限制。</p>
+<h4 id="Android中的SQLite"><a href="#Android中的SQLite" class="headerlink" title="Android中的SQLite"></a>Android中的SQLite</h4><p>Android默认支持SQLite，在android.database.sqlit包中包含了所有的与SQLite相关的类。SQLite的数据库文件保存在/data/data/{package-name}/databases目录下。</p>
+<p>下一次需要拿个例子来练练手了 ：）</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/06/08/2014-06-08-android-viewpager-and-nested-fragment/" rel="next" title="Android ViewPager and Nested Fragment">
+                <i class="fa fa-chevron-left"></i> Android ViewPager and Nested Fragment
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/06/18/2014-06-18-android-sqlite-demo/" rel="prev" title="Android SQLite Demo">
+                Android SQLite Demo <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Charles" />
+          <p class="site-author-name" itemprop="name">Charles</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLite-概述"><span class="nav-number">1.</span> <span class="nav-text">SQLite 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLite的特性"><span class="nav-number">2.</span> <span class="nav-text">SQLite的特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQLite没有Server的概念"><span class="nav-number">2.1.</span> <span class="nav-text">SQLite没有Server的概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQLite的数据类型"><span class="nav-number">2.2.</span> <span class="nav-text">SQLite的数据类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQLite对字段长度没有限制"><span class="nav-number">2.3.</span> <span class="nav-text">SQLite对字段长度没有限制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Android中的SQLite"><span class="nav-number">2.4.</span> <span class="nav-text">Android中的SQLite</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Charles</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

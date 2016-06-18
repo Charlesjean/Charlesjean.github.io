@@ -1,0 +1,628 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android, SQLite usage, SQLiteOpenHelper, SQLDatabase, SQLite Demo, SQLite multiple tables" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="之前简单学习了下SQLite的相关知识，这篇文章我们来看使用SQLite的一个简单的例子，例子中我们会使用如下的三个表格，进行数据库的创建，插入数据，和查询操作。可以到这里下载例子代码首先，我们需要介绍一下Android中提供的使用SQLite的接口以及使用方法。
+###Android中SQLite接口介绍###SQLiteOpenHelper和SQLiteDatabase是我们在Android提">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android SQLite Demo">
+<meta property="og:url" content="http://yoursite.com/2014/06/18/2014-06-18-android-sqlite-demo/index.html">
+<meta property="og:site_name" content="KISS">
+<meta property="og:description" content="之前简单学习了下SQLite的相关知识，这篇文章我们来看使用SQLite的一个简单的例子，例子中我们会使用如下的三个表格，进行数据库的创建，插入数据，和查询操作。可以到这里下载例子代码首先，我们需要介绍一下Android中提供的使用SQLite的接口以及使用方法。
+###Android中SQLite接口介绍###SQLiteOpenHelper和SQLiteDatabase是我们在Android提">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/database.png">
+<meta property="og:updated_time" content="2016-06-18T05:40:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android SQLite Demo">
+<meta name="twitter:description" content="之前简单学习了下SQLite的相关知识，这篇文章我们来看使用SQLite的一个简单的例子，例子中我们会使用如下的三个表格，进行数据库的创建，插入数据，和查询操作。可以到这里下载例子代码首先，我们需要介绍一下Android中提供的使用SQLite的接口以及使用方法。
+###Android中SQLite接口介绍###SQLiteOpenHelper和SQLiteDatabase是我们在Android提">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/database.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2014/06/18/2014-06-18-android-sqlite-demo/"/>
+
+  <title> Android SQLite Demo | KISS </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">KISS</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">尊重 谦虚 宽容</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android SQLite Demo
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-06-18T22:56:26+08:00" content="2014-06-18">
+              2014-06-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前简单学习了下SQLite的相关知识，这篇文章我们来看使用SQLite的一个简单的例子，例子中我们会使用如下的三个表格，进行数据库的创建，插入数据，和查询操作。可以到<a href="https://github.com/Charlesjean/SQLiteDemoProject" target="_blank" rel="external">这里</a>下载例子代码<br><br><img src="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/database.png" alt=""><br><br><br>首先，我们需要介绍一下Android中提供的使用SQLite的接口以及使用方法。<br></p>
+<p>###Android中SQLite接口介绍###<br><a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html" target="_blank" rel="external">SQLiteOpenHelper</a>和<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteDatabase.html" target="_blank" rel="external">SQLiteDatabase</a>是我们在Android提供的与SQLite相关的主要类：</p>
+<ul>
+<li>SQLiteOpenHelper用于数据库的管理，包括数据库和数据表格的创建，数据库的升级等</li>
+<li>SQLiteDatabase主要提供了操作数据的接口，包括插入，查询，执行SQL语句等</li>
+</ul>
+<a id="more"></a>
+<h4 id="SQLiteOpenHelpe"><a href="#SQLiteOpenHelpe" class="headerlink" title="SQLiteOpenHelpe"></a>SQLiteOpenHelpe</h4><p>SQLiteOpenHelper类主要用于数据库的创建和版本的管理，当我们的代码试图进行数据库的操作时，<strong>SQLiteOpenHelper会检查数据库是否已经创建，如果没有创建，那么将会执行创建数据库的操作；如果已经创建，并且版本正确，那么就会返回给我们数据库的句柄；如果版本不正确，那么就会进行数据库的升级等</strong>。类的主要接口如下：<br></p>
+<ul>
+<li>public abstract void onCreate(SQLiteDatabase db);当数据库被创建时会执行onCreate方法，在这个方法内部我们应当创建数据库的各种表格。</li>
+<li>public abstract void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion);当我们的数据库需要升级时，onUpgrade方法将会被调用，onUpdate的职责是根据新的数据库模型，创建新的表格，遗弃旧的表格，并在必要时将就的数据库当中的数据放入新的表格当中。<br><br></li>
+</ul>
+<p>此外还需要说明一点，SQLiteOpenHelper的构造方法中都需要一个<code>Version</code>,表示数据库的版本号，当我们从app store下载新的app版本时，SQLiteOpenHelper如果检测到本地版本号不符，就会执行onUpgrade方法进行数据库升级。</p>
+<p>从上面的接口可以看到，SQLiteOpenHelper为一个抽象类，因此在实际的使用过程中，我们需要继承它，并重写以上两个函数方能使用。</p>
+<h3 id="SQLite接口的使"><a href="#SQLite接口的使" class="headerlink" title="SQLite接口的使"></a>SQLite接口的使</h3><p>继承SQLiteOpenHelper，并重写相关的抽象方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DBHelper</span> <span class="keyword">extends</span> <span class="title">SQLiteOpenHelper</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String DATABASE_NAME=<span class="string">"library"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> DATABASE_VERSION=<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DBHelper</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, DATABASE_NAME, <span class="keyword">null</span>, DATABASE_VERSION);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(SQLiteDatabase db)</span> </span>&#123;</span><br><span class="line">        db.execSQL(DBGeneric.CREATE_STUDENT_TABLE);</span><br><span class="line">        db.execSQL(DBGeneric.CREATE_BOOK_TABLE);</span><br><span class="line">        db.execSQL(DBGeneric.CREATE_RENT_TABLE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUpgrade</span><span class="params">(SQLiteDatabase db, <span class="keyword">int</span> oldVersion, <span class="keyword">int</span> newVersion)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>我们暂时只重写onCreate方法，onUpgrade我们之后会详细描述。</p>
+<p>可以看到，onCreate方法中，我们只执行了一些SQL语句，进行了create table的操作。其中create student table和像table中插入数据的代码段如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//string we used to create table</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String CREATE_STUDENT_TABLE =<span class="string">"CREATE TABLE "</span> +</span><br><span class="line">           STUDENT_TABLE_NAME + <span class="string">" ( "</span> + KEY_ID + <span class="string">" TEXT PRIMARY KEY, "</span> +</span><br><span class="line">           STUDENT_NAME + <span class="string">" TEXT, "</span> +</span><br><span class="line">           STUDENT_TEL + <span class="string">" TEXT "</span> +<span class="string">" ) "</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//method used to insert new row to student table</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addNewStudentInfo</span><span class="params">(String id, String name, String tel)</span> </span>&#123;</span><br><span class="line">       SQLiteDatabase db = mSqliteOpenHelper.getWritableDatabase();</span><br><span class="line">       String insertNewInfo = <span class="string">"INSERT INTO "</span> + DBGeneric.STUDENT_TABLE_NAME +</span><br><span class="line">               <span class="string">" ( "</span> + DBGeneric.KEY_ID + <span class="string">", "</span> + DBGeneric.STUDENT_NAME +</span><br><span class="line">               <span class="string">", "</span> + DBGeneric.STUDENT_TEL + <span class="string">" ) VALUES ( "</span> + <span class="string">"'"</span> + id + <span class="string">"'"</span> + <span class="string">", "</span> +</span><br><span class="line">               <span class="string">"'"</span> + name + <span class="string">"'"</span> + <span class="string">", "</span> + <span class="string">"'"</span> + tel + <span class="string">"'"</span> + <span class="string">" )"</span>;</span><br><span class="line">       db.execSQL(insertNewInfo);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure><br>可以看到，我们利用<code>getWritableDatabase()</code>得到数据库的句柄，然后再利用SQLiteDataBase的接口就行数据库的操作，同样如果你要做查询，可以调用<code>getReadableDataBase()</code>。<code>getWritableDatabase</code>会对数据库示例进行加锁，因此如果仅仅是查询，一定要用getReadable*方法，以提高数据库使用的效率。还需提醒一点，当我们不在使用数据库时，##需要调用SQLiteOpenHelper的close()方法`，来关闭打开的数据库连接。</p>
+<p>rent_info表中存储了图书出借信息，包括学生的id和图书的id，下面的查询的例子就是根据数据库中的三张表，显示出学生的姓名，以及其借出的图书名:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Cursor c;</span><br><span class="line">    String test = <span class="string">"SELECT stu."</span>+DBGeneric.STUDENT_NAME+<span class="string">", book."</span>+DBGeneric.BOOK_NAME+<span class="string">" FROM "</span></span><br><span class="line">            + DBGeneric.STUDENT_TABLE_NAME + <span class="string">" stu,"</span> + DBGeneric.BOOK_TABLE_NAME</span><br><span class="line">            + <span class="string">" book,"</span> + DBGeneric.RENT_INFO_TABLE_NAME + <span class="string">" rent "</span></span><br><span class="line">            + <span class="string">"WHERE stu."</span>+DBGeneric.KEY_ID + <span class="string">"= rent."</span> + DBGeneric.RENT_STUDENT_ID</span><br><span class="line">            + <span class="string">" AND book."</span> + DBGeneric.KEY_ID + <span class="string">" = rent."</span> + DBGeneric.RENT_BOOK_ID;</span><br><span class="line">    c = mSqliteOpenHelper.getReadableDatabase().rawQuery(test, <span class="keyword">null</span>);</span><br><span class="line">    <span class="keyword">if</span> (c != <span class="keyword">null</span>)</span><br><span class="line">        c.moveToFirst();</span><br><span class="line">    do &#123;</span><br><span class="line">        Log.i(<span class="string">"DJ"</span>, c.getString(<span class="number">0</span>) + <span class="string">" "</span> + c.getString(<span class="number">1</span>));</span><br><span class="line">    &#125;<span class="keyword">while</span> (c.moveToNext());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>其实SQLite的使用仍然是普通的数据库操作，执行sql语句，得到游标，遍历得到结果。虽然SQLite是简化的SQL，但是对于插入和查询的，join操作，以及Count等函数操作仍然是支持的。</p>
+<h4 id="onUpdate方法的使用"><a href="#onUpdate方法的使用" class="headerlink" title="onUpdate方法的使用"></a>onUpdate方法的使用</h4><p>在我们的app升级时，往往会增加新的功能，而数据库表格往往也会有新的schema，因此onUpdate方法的正确实现尤为重要，如果你无需保存之前数据库的内容，那么可以使用下面的方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUpgrade</span><span class="params">(SQLiteDatabase db, <span class="keyword">int</span> oldVersion, <span class="keyword">int</span> newVersion)</span> </span>&#123;</span><br><span class="line"><span class="comment">//delete old tables</span></span><br><span class="line">db.execSQL(<span class="string">"DROP TABLE IF EXISTS "</span> + DATABASE_TABLE);</span><br><span class="line"><span class="comment">//create new tables with new schema</span></span><br><span class="line">      onCreate(db);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure><br>但是大多数情况下，我们需要保存已有的数据，StackOverflow上有一个<a href="http://stackoverflow.com/questions/3505900/sqliteopenhelper-onupgrade-confusion-android" target="_blank" rel="external">帖子</a>，很详细的说明了onUpdate的正确实现步骤。</p>
+<h3 id="关于本文的demo"><a href="#关于本文的demo" class="headerlink" title="关于本文的demo"></a>关于本文的demo</h3><p>本文的小demo中使用了Android Navigation Drawer模式，可以说是Navigation Drawer实现的标准方式，有兴趣的话建议学习一下，<a href="https://github.com/Charlesjean/SQLiteDemoProject" target="_blank" rel="external">代码</a>很简明易懂。</p>
+<p>附上一个很好地SQLite的<a href="http://www.tutorialspoint.com/sqlite/" target="_blank" rel="external">帮助网站</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/06/18/2014-06-18-android-sqlite-introduction/" rel="next" title="Android Sqlite（一）">
+                <i class="fa fa-chevron-left"></i> Android Sqlite（一）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/07/06/2014-07-06-android-property-animation/" rel="prev" title="Android Property Animation">
+                Android Property Animation <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Charles" />
+          <p class="site-author-name" itemprop="name">Charles</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQLiteOpenHelpe"><span class="nav-number">1.</span> <span class="nav-text">SQLiteOpenHelpe</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLite接口的使"><span class="nav-number"></span> <span class="nav-text">SQLite接口的使</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#onUpdate方法的使用"><span class="nav-number">1.</span> <span class="nav-text">onUpdate方法的使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于本文的demo"><span class="nav-number"></span> <span class="nav-text">关于本文的demo</span></a></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Charles</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

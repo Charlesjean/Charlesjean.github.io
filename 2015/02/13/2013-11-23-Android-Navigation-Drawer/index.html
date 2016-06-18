@@ -1,0 +1,638 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Navigation Drawer,DrawerLayout," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Navigation Drawer is widely used now after Google officially support it in android support library. Apps like Gmail and Youtube also use this design, and it’s really more convinent to put navigation i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Navigation Drawer">
+<meta property="og:url" content="http://yoursite.com/2015/02/13/2013-11-23-Android-Navigation-Drawer/index.html">
+<meta property="og:site_name" content="KISS">
+<meta property="og:description" content="Navigation Drawer is widely used now after Google officially support it in android support library. Apps like Gmail and Youtube also use this design, and it’s really more convinent to put navigation i">
+<meta property="og:updated_time" content="2015-02-13T13:17:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android Navigation Drawer">
+<meta name="twitter:description" content="Navigation Drawer is widely used now after Google officially support it in android support library. Apps like Gmail and Youtube also use this design, and it’s really more convinent to put navigation i">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/02/13/2013-11-23-Android-Navigation-Drawer/"/>
+
+  <title> Android Navigation Drawer | KISS </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">KISS</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">尊重 谦虚 宽容</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android Navigation Drawer
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-02-13T21:17:08+08:00" content="2015-02-13">
+              2015-02-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Navigation Drawer is widely used now after Google officially support it in android support library. Apps like Gmail and Youtube also use this design, and it’s really more convinent to put navigation items in navigation drawer than in a Tab control, and this design will also make the <code>visible size</code> of your app much larger. I have used navigation drawer in the demo code for ExpandableListView <a href="https://github.com/Charlesjean/NavigationDrawer" target="_blank" rel="external">here</a>. It’s very simple, you can download and learn how we can use navigation drawer.</p>
+<p>To use navigation drawer in your app, you just need the steps below:</p>
+<ul>
+<li>first you need to declear <code>DrawerLayout</code> as the root container of you layout</li>
+<li>the first child of DrawerLayout is the main container of your app, usually it’s a kind of viewGroup.</li>
+<li>the second child of DrawerLayout is a ListView, which is used for place navigation items.</li>
+</ul>
+<p>Below is a the layout we use in the demo:<br></p>
+<a id="more"></a>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">android.support.v4.widget.DrawerLayout</span></span><br><span class="line">    <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/drawer_layout"</span></span><br><span class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span><br><span class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- As the main content view, the view below consumes the entire</span><br><span class="line">         space available using match_parent in both dimensions. --&gt;</span></span><br><span class="line">    <span class="tag">&lt; <span class="attr">FrameLayout</span></span><br><span class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/content_frame"</span></span><br><span class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span><br><span class="line">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- android:layout_gravity="start" tells DrawerLayout to treat</span><br><span class="line">         this as a sliding drawer on the left side for left-to-right</span><br><span class="line">         languages and on the right side for right-to-left languages.</span><br><span class="line">         The drawer is given a fixed width in dp and extends the full height of</span><br><span class="line">         the container. A solid background is used for contrast</span><br><span class="line">         with the content view. --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ExpandableListView</span></span><br><span class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/left_drawer"</span></span><br><span class="line">        <span class="attr">android:layout_width</span>=<span class="string">"240dp"</span></span><br><span class="line">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span><br><span class="line">        <span class="attr">android:layout_gravity</span>=<span class="string">"start"</span></span><br><span class="line">        <span class="attr">android:choiceMode</span>=<span class="string">"singleChoice"</span></span><br><span class="line">        <span class="attr">android:divider</span>=<span class="string">"#999999"</span></span><br><span class="line">        <span class="attr">android:dividerHeight</span>=<span class="string">"1dp"</span></span><br><span class="line">        <span class="attr">android:background</span>=<span class="string">"#ffffff"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">android.support.v4.widget.DrawerLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>After you declear this LayoutFile, you need to init your drawerLayout in the <code>onCreate</code> method of your MainActivity class. Simply like this:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);</span><br><span class="line">      mDrawerList = (ExpandableListView) findViewById(R.id.left_drawer);</span><br></pre></td></tr></table></figure><br><br>Of course you need to provide an adapter for your ListView to populate the drawer, and after all these steps above, you can have navigation drawer in your app, but there are something more you should know.</p>
+<p>##DrawerLayout state<br>After your app is configured with navigation drawer, when user taps and holds on the edge of your screen, drawer will slide into the screen, as well as users use the slide gesture. Maybe sometimes you want to disable this, that is keep drawer closed all the time. The api also provide use three state:<code>LOCK_MODE_LOCK_CLOSED</code>, <code>LOCK_MODE_LOCK_OPEN</code>,<code>LOCK_MODE_UNLOCK</code>, you can use <code>setDrawerLockMode</code> to keep drawer closed all time or open all time.</p>
+<p>##Listener for Drawer Events<br>In order to listen to events of navigation drawer, such <code>Drawer open</code> and <code>Drawer Close</code>, you need to add listener for your the DrawerLayout object, and  Interface <code>DrawerLayout.DrawerListener&#39; is used for this. But you do not need to implement this interface yourself, android already provide us an convinent class called</code>ActionBarDrawerToggle` which is used to implement recommended design for navigation drawers as google says <br></p>
+<p> <code>This class provides a handy way to tie together the functionality of DrawerLayout and the framework ActionBar to implement the recommended design for navigation drawers.</code><br>you need to read reference of this class to make it functional.</p>
+<p>##Bug in DrawerLayout<br>when I use it, I also found one bug about DrawerLayout, when I use multiple finger to zoom my app, it will crash with the following stack<br><br><code>java.lang.ArrayIndexOutOfBoundsException
+android.support.v4.widget.ViewDragHelper.shouldInterceptTouchEvent(ViewDragHelper.java:1004)
+android.support.v4.widget.DrawerLayout.onInterceptTouchEvent(DrawerLayout.java:820)
+android.view.ViewGroup.dispatchTouchEvent(ViewGroup.java:1909)
+android.view.ViewGroup.dispatchTransformedTouchEvent(ViewGroup.java:2270)
+android.view.ViewGroup.dispatchTouchEvent(ViewGroup.java:2010)
+android.view.ViewGroup.dispatchTransformedTouchEvent(ViewGroup.java:2270)
+android.view.ViewGroup.dispatchTouchEvent(ViewGroup.java:2010)
+android.view.ViewGroup.dispatchTransformedTouchEvent(ViewGroup.java:2270)
+android.view.ViewGroup.dispatchTouchEvent(ViewGroup.java:2010)
+android.view.ViewGroup.dispatchTransformedTouchEvent(ViewGroup.java:2270)
+android.view.ViewGroup.dispatchTouchEvent(ViewGroup.java:2010)</code><br><br>This is caused by an issue of DrawerLayout <a href="">60464</a>, and you can find discuss and solution <a href="https://github.com/chrisbanes/PhotoView/issues/72" target="_blank" rel="external">here</a>.</p>
+<p>Wish this will be helpful :)</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Navigation-Drawer/" rel="tag">#Navigation Drawer</a>
+          
+            <a href="/tags/DrawerLayout/" rel="tag">#DrawerLayout</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/02/13/2013-09-25-android-expandable-list-view-tutorial/" rel="next" title="Android Expandable List View Tutorial">
+                <i class="fa fa-chevron-left"></i> Android Expandable List View Tutorial
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/02/13/2013-08-31-learning-android-fragment/" rel="prev" title="Learning android fragment">
+                Learning android fragment <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Charles" />
+          <p class="site-author-name" itemprop="name">Charles</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Charles</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

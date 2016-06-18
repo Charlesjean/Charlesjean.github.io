@@ -1,0 +1,617 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS, concurrent program, Grand Central Dispatch, GCD, NSOperationQueue, ios concurrent" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="在移动App开发中，用户体验是我们在开发过程中必须考虑的问题，实时的相应用户的交互事件，是对一个App最基本的要求，因此程序的并行就显得尤其重要，因此在iOS中，程序的并行并不仅仅是为了加快某些操作的速度，更重要的我们是为了不要阻塞用户在主线程上的交互。iOS提供给我们不同级别的并行的接口，包括NSThread、Grand Central Dispatch（GCD）和NSOperationQueu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS并行开发之GCD的使用">
+<meta property="og:url" content="http://yoursite.com/2014/04/19/2014-04-19-ios-concurrent-program1/index.html">
+<meta property="og:site_name" content="KISS">
+<meta property="og:description" content="在移动App开发中，用户体验是我们在开发过程中必须考虑的问题，实时的相应用户的交互事件，是对一个App最基本的要求，因此程序的并行就显得尤其重要，因此在iOS中，程序的并行并不仅仅是为了加快某些操作的速度，更重要的我们是为了不要阻塞用户在主线程上的交互。iOS提供给我们不同级别的并行的接口，包括NSThread、Grand Central Dispatch（GCD）和NSOperationQueu">
+<meta property="og:updated_time" content="2016-06-18T05:47:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS并行开发之GCD的使用">
+<meta name="twitter:description" content="在移动App开发中，用户体验是我们在开发过程中必须考虑的问题，实时的相应用户的交互事件，是对一个App最基本的要求，因此程序的并行就显得尤其重要，因此在iOS中，程序的并行并不仅仅是为了加快某些操作的速度，更重要的我们是为了不要阻塞用户在主线程上的交互。iOS提供给我们不同级别的并行的接口，包括NSThread、Grand Central Dispatch（GCD）和NSOperationQueu">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2014/04/19/2014-04-19-ios-concurrent-program1/"/>
+
+  <title> iOS并行开发之GCD的使用 | KISS </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">KISS</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">尊重 谦虚 宽容</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS并行开发之GCD的使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-04-19T09:11:24+08:00" content="2014-04-19">
+              2014-04-19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在移动App开发中，用户体验是我们在开发过程中必须考虑的问题，实时的相应用户的交互事件，是对一个App最基本的要求，因此程序的并行就显得尤其重要，因此在iOS中，程序的并行并不仅仅是为了加快某些操作的速度，更重要的我们是为了不要阻塞用户在主线程上的交互。iOS提供给我们不同级别的并行的接口，包括NSThread、Grand Central Dispatch（GCD）和NSOperationQueue，来满足我们在不同情形下的需要。</p>
+<p>不同的api使用的复杂程度也不同，GCD和NSOperationQueue是建立在NSThread的基础之上，提供给了我们更加高层次的抽象，因此在使用中，我们应该尽量的使用GCD与NSOperationQueu，主要有一下原因：</p>
+<ul>
+<li>GCD和NSOperationQueue提供给了我们更加友好的接口，使用起来更加方便灵活</li>
+<li>GCD和NSOperationQueue仍然是以NSThread为基础来实现的，他们的本质是在系统中维护了一个线程池。当我们放入其中的任务被运行时，运行的单位仍然是线程池中的线程</li>
+<li>GCD和NSOperationQueue可以根据系统当前的繁忙状态来决定线程池中可以并发的线程数，这样可以防止过多的线程同时并发，导致系统性能的下降。</li>
+</ul>
+<p>这里我主要是总结一下并行库的一些知识，还有一个小的<a href="https://github.com/Charlesjean/iOSConcurrentTest" target="_blank" rel="external">Demo</a>，展示了api的基本用法。</p>
+<p>GCD是iOS提供的比较便捷的并行api，我们可以很方便的将包含我们操作的block放在GCD的<code>dispatch queue</code>当中，然后任务就会在线程池中运行。iOS提供给了我们五中不同优先级的dispatch queue，三种不同优先级的背景队列,主线程对应的main queue，以及一个用户IO 操作的背景队列。我们也可以通过系统提供的接口，自己创建新的dispatch queue。</p>
+<a id="more"></a>
+<p>####Dispatch Queue<br>一般情况下，系统提供的队列就可以满足我们的要求<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dispatch_queue_t</span> dispatch_get_global_queue(<span class="keyword">long</span> priority, <span class="keyword">unsigned</span> <span class="keyword">long</span> flags)</span><br></pre></td></tr></table></figure><br>我们也可以使用系统api <code>dispatch_queue_create</code>创建自己的队列，并指定队列的类型（串行队列或者并行队列），然后利用<code>dispatch_async</code>或者<code>dispatch_sync</code>将block放入队列中执行，一旦我们将操作放入队列中之后，我们便失去了对这些操作的控制，完全由系统决定他们的实行时间，如果你需要在某些时候取消队列中的操作，那么你需要使用NSOperationQueue。</p>
+<p>#####多线程时的资源访问的保护<br>由于我们的操作在线程池中时并行执行的（除非你的dispatch queue为顺序的），因此如果我们操作中有对资源的写操作，那么我们就需要实现资源的互斥访问，可以通过<code>dispatch_barrier_async</code>来方便的做到这一点<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"concurrentQueue"</span>, DISPATCH_QUEUE_CONCURRENT);</span><br><span class="line"><span class="comment">//if we want to add an item to array , and this method is called in blocks in the queue</span></span><br><span class="line">- (<span class="keyword">void</span>)insertString:(<span class="built_in">NSString</span>*)str&#123;</span><br><span class="line">	dispatch_barrier_async(queue, ^&#123;</span><br><span class="line">	 [<span class="keyword">self</span>.array addObject:str];</span><br><span class="line">&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><code>dispatch_barrier_async</code>确保了我们所有的插入操作都是安全的，它确保了<code>addObject</code>语句在queue中所有在其之前插入的block执行完之后才执行。</p>
+<p>#####Dispatch Group<br>Dispatch Group的作用是我们可以集中的处理属于同一group的block，比如我们想要在某几个block全都执行完毕后，将他们的执行结果整合起来：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">dispatch_group_t group = dispatch_group_create();</span><br><span class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">dispatch_group_async(group,queue,^&#123;</span><br><span class="line">	<span class="comment">//some operation</span></span><br><span class="line">&#125;);</span><br><span class="line">dispatch_group_async(group,queue,^&#123;</span><br><span class="line">	<span class="comment">//some other operation</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//perform some tasks when all operations are done</span></span><br><span class="line">dispatch_group_notify(group, dispatch_get_main_queue(),^&#123;</span><br><span class="line">	MyLabel.setText(<span class="string">@"All operations are done"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><br>只有当同一group当中的所有block都执行完之后，<code>MyLabel</code>才会发出通知。</p>
+<p>GCD还有很多其他的使用和实现的细节，你可以通过<a href="https://developer.apple.com/library/ios/DOCUMENTATION/General/Conceptual/ConcurrencyProgrammingGuide/ConcurrencyProgrammingGuide.pdf" target="_blank" rel="external">文档</a>还获得更多的内容</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/04/16/2014-04-16-objectivec-runtime-learning-4/" rel="next" title="深入ObjectiveC Runtime之(四)类的加载与Category的实现">
+                <i class="fa fa-chevron-left"></i> 深入ObjectiveC Runtime之(四)类的加载与Category的实现
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/04/27/2014-04-27-c-plus-plus-construct-class/" rel="prev" title="在设计C++的类时我们需要考虑哪些内容">
+                在设计C++的类时我们需要考虑哪些内容 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Charles" />
+          <p class="site-author-name" itemprop="name">Charles</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Charles</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

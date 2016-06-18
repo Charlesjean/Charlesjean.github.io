@@ -1,0 +1,620 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android, Scroller, OverScroller, Horizontal List View, Scroll animation" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="记得读到过一句话，大意为人为错误主要是由于工具的设计不合理导致的，一个设计良好的工具应该只需要少量的文档，或者根本不需要文档。SDK就是我们开发人员手中的工具，如果按照这句话来说的话，Android在很多方面设计的不够合理，因为很多类你即使认真读了文档（Android的文档也有待改进和完善），用起来也不是得心应手。个人认为Scroller就是一个例子。在具体说如何实现滚动之前，我们先来谈谈滚动的实">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android中为自定义的View添加滚动效果">
+<meta property="og:url" content="http://yoursite.com/2014/08/04/2014-08-04-android-scroller-usage/index.html">
+<meta property="og:site_name" content="KISS">
+<meta property="og:description" content="记得读到过一句话，大意为人为错误主要是由于工具的设计不合理导致的，一个设计良好的工具应该只需要少量的文档，或者根本不需要文档。SDK就是我们开发人员手中的工具，如果按照这句话来说的话，Android在很多方面设计的不够合理，因为很多类你即使认真读了文档（Android的文档也有待改进和完善），用起来也不是得心应手。个人认为Scroller就是一个例子。在具体说如何实现滚动之前，我们先来谈谈滚动的实">
+<meta property="og:updated_time" content="2016-06-18T05:36:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android中为自定义的View添加滚动效果">
+<meta name="twitter:description" content="记得读到过一句话，大意为人为错误主要是由于工具的设计不合理导致的，一个设计良好的工具应该只需要少量的文档，或者根本不需要文档。SDK就是我们开发人员手中的工具，如果按照这句话来说的话，Android在很多方面设计的不够合理，因为很多类你即使认真读了文档（Android的文档也有待改进和完善），用起来也不是得心应手。个人认为Scroller就是一个例子。在具体说如何实现滚动之前，我们先来谈谈滚动的实">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2014/08/04/2014-08-04-android-scroller-usage/"/>
+
+  <title> Android中为自定义的View添加滚动效果 | KISS </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">KISS</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">尊重 谦虚 宽容</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android中为自定义的View添加滚动效果
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-08-04T20:54:20+08:00" content="2014-08-04">
+              2014-08-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>记得读到过一句话，大意为<strong>人为错误主要是由于工具的设计不合理导致的，一个设计良好的工具应该只需要少量的文档，或者根本不需要文档</strong>。SDK就是我们开发人员手中的工具，如果按照这句话来说的话，Android在很多方面设计的不够合理，因为很多类你即使认真读了文档（Android的文档也有待改进和完善），用起来也不是得心应手。个人认为Scroller就是一个例子。在具体说如何实现滚动之前，我们先来谈谈滚动的实质是什么。</p>
+<p>滚动包含两种情形，一种是用户手指始终与屏幕接触，并在屏幕上滑动，此时View随着手指的滑动而滚动；另一种是用户快速的在屏幕上滑动后，手指离开屏幕，而View在手指离开屏幕后仍以一定的初始速度滚动，直到速度降为0，或者滚动到了view的两端。因此滚动可以实际上就是，View中的点在一定时间内的运动，本质上可以说是<code>一定时间内由于View位置的改变而产生的一段动画</code>。既然是动画，那么就包含以下要素：</p>
+<ul>
+<li>动画的时间</li>
+<li>动画初始状态</li>
+<li>动画中每一帧的状态</li>
+</ul>
+<p>既然滚动也是动画，那么自然也需要设置上述状态，并需要根据动画中的每一帧来更新View。</p>
+<a id="more"></a>
+<p>####自定义View滚动的实现####<br>Scroller与OverScroller是Android提供的用来实现滚动效果的类，类中包装好了滚动的速度，时间，以及相关的差值方法。这两个类的接口非常相似，我们下面以OverScroller为例来说明， OverScroller的主要接口如下：<br><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line">	*this will startScroll from point (startX, startY) by dx </span><br><span class="line">	*and dy respectively in x and y  </span><br><span class="line"> 	*/</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startScroll</span><span class="params">(<span class="keyword">int</span> startX, <span class="keyword">int</span> startY, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy, <span class="keyword">int</span> duration)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span><br><span class="line">	*Start scrolling based on a fling gesture. The distance traveled will</span><br><span class="line">    * depend on the initial velocity of the fling.</span><br><span class="line">	*/</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fling</span><span class="params">(<span class="keyword">int</span> startX, <span class="keyword">int</span> startY, <span class="keyword">int</span> velocityX, <span class="keyword">int</span> velocityY,</span><br><span class="line">            <span class="keyword">int</span> minX, <span class="keyword">int</span> maxX, <span class="keyword">int</span> minY, <span class="keyword">int</span> maxY, <span class="keyword">int</span> overX, <span class="keyword">int</span> overY)</span></span><br><span class="line"></span><br><span class="line"> <span class="comment">/**</span><br><span class="line">     * Call this when you want to know the new location. If it returns true, the</span><br><span class="line">     * animation is not yet finished.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">computeScrollOffset</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure><br>OverScroller的接口就对应了我们上述的动画的不同要素：</p>
+<ul>
+<li>startScroll()函数接受滚动的起始位置，在x和y方向上需要滚动的距离,以及滚动<strong>动画的时间</strong>；fling()除了起始位置（x,y）外需要更多的参数，包括x和y方向上的速度，以及x和y方向上最大和最小滚动的距离等。这两个函数就是我们<strong>设置滚动初始状态的函数</strong><br></li>
+<li>computeScrollOffset()函数利用差值函数与当前的时间点，计算出<strong>当前时刻动画的状态</strong></li>
+</ul>
+<p>有了滚动的初始状态以及滚动过程中每一帧的状态，我们还需要一个循环，使得我们能够在整个动画过程中获得动画的当前状态，并作用到View上。<br><br>有了上述的理解，我们可以将实现滚动的流程整理为如下：<br><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ScrollRunnable</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">      <span class="keyword">private</span> OverScroller mScroller;</span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">int</span> mCurrScrollX;</span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">int</span> mCurrScrollY;</span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">boolean</span> isScrolling;</span><br><span class="line"></span><br><span class="line">      <span class="comment">//Constructor</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">ScrollRunnable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">          LinearInterpolator linearInterpolator = <span class="keyword">new</span> LinearInterpolator();</span><br><span class="line">          DecelerateInterpolator decelerateInterpolator = <span class="keyword">new</span> DecelerateInterpolator();</span><br><span class="line">          <span class="comment">//Create scroller and assign a interpolator to it.</span></span><br><span class="line">          mScroller = <span class="keyword">new</span> OverScroller(mContext, decelerateInterpolator);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stopScroller</span><span class="params">()</span> </span>&#123;</span><br><span class="line">          mScroller.abortAnimation();</span><br><span class="line">          isScrolling = <span class="keyword">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">          <span class="comment">//If we are still scrolling get the new x,y values.</span></span><br><span class="line">          <span class="keyword">if</span>(mScroller.computeScrollOffset()) &#123;</span><br><span class="line"></span><br><span class="line">              <span class="keyword">float</span> oldScrollX = mCurrScrollX;</span><br><span class="line">              <span class="keyword">float</span> oldScrollY = mCurrScrollY;</span><br><span class="line">              mCurrScrollX = mScroller.getCurrX();</span><br><span class="line">              mCurrScrollY = mScroller.getCurrY();</span><br><span class="line">              <span class="comment">//here we scroll our view, scrollBy is a method of View, this is part code of my project, and </span></span><br><span class="line">		<span class="comment">//my View can only scroll horizontally, so dx is always 0</span></span><br><span class="line">              scrollBy((<span class="keyword">int</span>)(mCurrScrollX - oldScrollX), (<span class="keyword">int</span>)(<span class="number">0</span>));</span><br><span class="line">              <span class="comment">//If we have not reached our scroll limit,then run this Runnable again on UI event thread.</span></span><br><span class="line">		<span class="comment">//thus we have a loop for the scroll</span></span><br><span class="line">              post(<span class="keyword">this</span>);</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//you can use gesture detector to detect fling gesture, and call this method in onFling.</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onContentFling</span><span class="params">(MotionEvent e1, MotionEvent e2, <span class="keyword">float</span> velocityX, <span class="keyword">float</span> velocityY)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">if</span> (isScrolling)</span><br><span class="line">              stopScroller();</span><br><span class="line">          isScrolling = <span class="keyword">true</span>;</span><br><span class="line">          mScroller.fling(mCurrScrollX, mCurrScrollY, (<span class="keyword">int</span>)-velocityX, (<span class="keyword">int</span>)-velocityY,</span><br><span class="line">                  <span class="number">0</span>, HorizontalGallyView.<span class="keyword">this</span>.getWidth(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">          post(<span class="keyword">this</span>);</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line"><span class="comment">////you can use gesture detector to detect scroll gesture, and call this method in onScroll.</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onContentScroll</span><span class="params">(MotionEvent e1, MotionEvent e2, <span class="keyword">float</span> distanceX, <span class="keyword">float</span> distanceY)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">if</span> (isScrolling)</span><br><span class="line">              stopScroller();</span><br><span class="line">          isScrolling = <span class="keyword">true</span>;</span><br><span class="line">	<span class="comment">//start the scroll from the last position.</span></span><br><span class="line">          mScroller.startScroll(getScrollX(), <span class="number">0</span>, (<span class="keyword">int</span>)distanceX, <span class="number">0</span>, <span class="number">10</span>);</span><br><span class="line">          post(<span class="keyword">this</span>);</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure><br>基本上是用上面的代码就可以实现滚动的效果。</p>
+<p>####对OverScroller类设计的一些看法####<br>开始说过，我认为Android当中OverScroller类的实现不能说是好的设计，因为如果我们仅仅看文档而不看OverScroller类的源代码，很难知道正确的使用这个类的方法。因为要想正确使用，我们必须自己去维护一个Loop，并主动查询滚动过程中每一帧的状态，然后将状态apply到View上。<br></p>
+<p>如果OverScroller采用了类似Property Animation的框架，应该会变得更易于使用。在Property Animation框架中，animator类会主动的将动画每一帧的结果通过OnAnimationUpdate传递给Listener，然后Listener可以更新动画的过程。这个框架的好处，就是将动画的整个loop包装在了动画的内部，我们只需要调用start()方法开始动画，之后只需被动利用监视器检测动画的过程即可。如果你不熟悉Property Animation，请看<a href="http://developer.android.com/guide/topics/graphics/prop-animation.html" target="_blank" rel="external">这里</a>。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/07/22/2014-07-22-ios-vs-android-performance/" rel="next" title="浅谈Android使用起来不如iOS流畅的原因">
+                <i class="fa fa-chevron-left"></i> 浅谈Android使用起来不如iOS流畅的原因
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/08/23/2014-08-23-android-asynctask-not-suitable-for-long-time-task/" rel="prev" title="Why AsyncTask is not suitable for long running operation">
+                Why AsyncTask is not suitable for long running operation <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Charles" />
+          <p class="site-author-name" itemprop="name">Charles</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Charles</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

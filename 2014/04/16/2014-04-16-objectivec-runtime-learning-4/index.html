@@ -1,0 +1,610 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Objective runtime, ios, rumtime feature, objectivec class implementation" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="源代码经过编译、连接转化为机器码，在运行时又由runtime加载入内存，因此编译器、连接器和runtime在某种程度上说是协同工作的。在编译过程中，编译器会首先将源代码中的每一个类转换为汇编代码，每一个类的不同的变量，方法等都会被放在汇编代码的不同段当中，然后再将汇编代码转化为机器语言即二进制。为了确保runtime能够对程序进行解析加载，编译器和runtime之间必须有某种约定，以实现runti">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入ObjectiveC Runtime之(四)类的加载与Category的实现">
+<meta property="og:url" content="http://yoursite.com/2014/04/16/2014-04-16-objectivec-runtime-learning-4/index.html">
+<meta property="og:site_name" content="KISS">
+<meta property="og:description" content="源代码经过编译、连接转化为机器码，在运行时又由runtime加载入内存，因此编译器、连接器和runtime在某种程度上说是协同工作的。在编译过程中，编译器会首先将源代码中的每一个类转换为汇编代码，每一个类的不同的变量，方法等都会被放在汇编代码的不同段当中，然后再将汇编代码转化为机器语言即二进制。为了确保runtime能够对程序进行解析加载，编译器和runtime之间必须有某种约定，以实现runti">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/cn/master/source/_posts/Category.png">
+<meta property="og:updated_time" content="2015-02-15T08:25:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入ObjectiveC Runtime之(四)类的加载与Category的实现">
+<meta name="twitter:description" content="源代码经过编译、连接转化为机器码，在运行时又由runtime加载入内存，因此编译器、连接器和runtime在某种程度上说是协同工作的。在编译过程中，编译器会首先将源代码中的每一个类转换为汇编代码，每一个类的不同的变量，方法等都会被放在汇编代码的不同段当中，然后再将汇编代码转化为机器语言即二进制。为了确保runtime能够对程序进行解析加载，编译器和runtime之间必须有某种约定，以实现runti">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Charlesjean/cn/master/source/_posts/Category.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2014/04/16/2014-04-16-objectivec-runtime-learning-4/"/>
+
+  <title> 深入ObjectiveC Runtime之(四)类的加载与Category的实现 | KISS </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">KISS</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">尊重 谦虚 宽容</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                深入ObjectiveC Runtime之(四)类的加载与Category的实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-04-16T21:41:24+08:00" content="2014-04-16">
+              2014-04-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>源代码经过编译、连接转化为机器码，在运行时又由runtime加载入内存，因此编译器、连接器和runtime在某种程度上说是协同工作的。在编译过程中，编译器会首先将源代码中的每一个类转换为汇编代码，每一个类的不同的变量，方法等都会被放在汇编代码的不同段当中，然后再将汇编代码转化为机器语言即二进制。为了确保runtime能够对程序进行解析加载，编译器和runtime之间必须有某种约定，以实现runtime对类信息的加载。<br>例如对于如下的代码：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">&lt;objc/Object.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">MySuperClass</span>: <span class="title">Object</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">-(<span class="keyword">void</span>) myMessage1;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">MySuperClass</span></span></span><br><span class="line">-(<span class="keyword">void</span>) myMessage1 &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">MyClass</span>: <span class="title">MySuperClass</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">-(<span class="keyword">void</span>) myMessage2;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">MyClass</span></span></span><br><span class="line">-(<span class="keyword">void</span>) myMessage2 &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>编译成的汇编代码的一部分(无须细读汇编代码)：<br><a id="more"></a><br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">  .file   <span class="string">"test.m"</span></span><br><span class="line"></span><br><span class="line">    .type   L_OBJC_CLASS_NAME_,@object <span class="meta"># @<span class="meta-string">"\01L_OBJC_CLASS_NAME_"</span></span></span><br><span class="line">    .section    <span class="string">"__TEXT,__objc_classname,cstring_literals"</span>,<span class="string">"aw"</span>,@progbits</span><br><span class="line">L_OBJC_CLASS_NAME_:</span><br><span class="line">    .asciz   <span class="string">"MySuperClass"</span></span><br><span class="line">    .size   L_OBJC_CLASS_NAME_, <span class="number">13</span></span><br><span class="line"></span><br><span class="line">    .type   l_OBJC_METACLASS_RO_$_MySuperClass,@object <span class="meta"># @<span class="meta-string">"\01l_OBJC_METACLASS_RO_$_MySuperClass"</span></span></span><br><span class="line">    .section    <span class="string">"__DATA, __objc_const"</span>,<span class="string">"aw"</span>,@progbits</span><br><span class="line">    .align  <span class="number">8</span></span><br><span class="line">l_OBJC_METACLASS_RO_$_MySuperClass:</span><br><span class="line">    .long   <span class="number">1</span>                       <span class="meta"># 0x1</span></span><br><span class="line">    .long   <span class="number">40</span>                      <span class="meta"># 0x28</span></span><br><span class="line">    .long   <span class="number">40</span>                      <span class="meta"># 0x28</span></span><br><span class="line">    .zero   <span class="number">4</span></span><br><span class="line">    .quad   <span class="number">0</span></span><br><span class="line">    .quad   L_OBJC_CLASS_NAME_</span><br><span class="line">    .quad   <span class="number">0</span></span><br><span class="line">    .quad   <span class="number">0</span></span><br><span class="line">    .quad   <span class="number">0</span></span><br><span class="line">    .quad   <span class="number">0</span></span><br><span class="line">    .quad   <span class="number">0</span></span><br><span class="line">    .size   l_OBJC_METACLASS_RO_$_MySuperClass, <span class="number">72</span></span><br><span class="line"></span><br><span class="line">    .type   OBJC_METACLASS_$_MySuperClass,@object <span class="meta"># @<span class="meta-string">"OBJC_METACLASS_$_MySuperClass"</span></span></span><br><span class="line">    .section    <span class="string">"__DATA, __objc_data"</span>,<span class="string">"aw"</span>,@progbits</span><br><span class="line">    .globl  OBJC_METACLASS_$_MySuperClass</span><br><span class="line">    .align  <span class="number">8</span></span><br><span class="line">OBJC_METACLASS_$_MySuperClass:</span><br><span class="line">    .quad   OBJC_METACLASS_$_Object</span><br><span class="line">    .quad   OBJC_METACLASS_$_Object</span><br><span class="line">    .quad   _objc_empty_cache</span><br><span class="line">    .quad   _objc_empty_vtable</span><br><span class="line">    .quad   l_OBJC_METACLASS_RO_$_MySuperClass</span><br><span class="line">    .size   OBJC_METACLASS_$_MySuperClass, <span class="number">40</span></span><br><span class="line"></span><br><span class="line">    .type   L_OBJC_METH_VAR_NAME_,@object <span class="meta"># @<span class="meta-string">"\01L_OBJC_METH_VAR_NAME_"</span></span></span><br><span class="line">    .section    <span class="string">"__TEXT,__objc_methname,cstring_literals"</span>,<span class="string">"aw"</span>,@progbits</span><br><span class="line">L_OBJC_METH_VAR_NAME_:</span><br><span class="line">    .asciz   <span class="string">"myMessage1"</span></span><br><span class="line">    .size   L_OBJC_METH_VAR_NAME_, <span class="number">11</span></span><br><span class="line"></span><br><span class="line">    .type   L_OBJC_METH_VAR_TYPE_,@object <span class="meta"># @<span class="meta-string">"\01L_OBJC_METH_VAR_TYPE_"</span></span></span><br><span class="line">    .section    <span class="string">"__TEXT,__objc_methtype,cstring_literals"</span>,<span class="string">"aw"</span>,@progbits</span><br><span class="line">L_OBJC_METH_VAR_TYPE_:</span><br><span class="line">    .asciz   <span class="string">"v16@0:8"</span></span><br><span class="line">    .size   L_OBJC_METH_VAR_TYPE_, <span class="number">8</span></span><br><span class="line"></span><br><span class="line">    .type   l_OBJC_$_INSTANCE_METHODS_MySuperClass,@object <span class="meta"># @<span class="meta-string">"\01l_OBJC_$_INSTANCE_METHODS_MySuperClass"</span></span></span><br><span class="line">    .section    <span class="string">"__DATA, __objc_const"</span>,<span class="string">"aw"</span>,@progbits</span><br><span class="line">    .align  <span class="number">8</span></span><br><span class="line">l_OBJC_$_INSTANCE_METHODS_MySuperClass:</span><br><span class="line">    .long   <span class="number">24</span>                      <span class="meta"># 0x18</span></span><br><span class="line">    .long   <span class="number">1</span>                       <span class="meta"># 0x1</span></span><br><span class="line">    .quad   L_OBJC_METH_VAR_NAME_</span><br><span class="line">    .quad   L_OBJC_METH_VAR_TYPE_</span><br><span class="line">    .quad   _2D__5B_MySuperClass_20_myMessage1_5D_</span><br><span class="line">    .size   l_OBJC_$_INSTANCE_METHODS_MySuperClass, <span class="number">32</span></span><br><span class="line"></span><br><span class="line">    .type   l_OBJC_CLASS_RO_$_MySuperClass,@object <span class="meta"># @<span class="meta-string">"\01l_OBJC_CLASS_RO_$_MySuperClass"</span></span></span><br><span class="line">    .align  <span class="number">8</span></span><br><span class="line">l_OBJC_CLASS_RO_$_MySuperClass:</span><br><span class="line">    .long   <span class="number">0</span>                       <span class="meta"># 0x0</span></span><br><span class="line">    .long   <span class="number">8</span>                       <span class="meta"># 0x8</span></span><br><span class="line">    .long   <span class="number">8</span>                       <span class="meta"># 0x8</span></span><br><span class="line">    .zero   <span class="number">4</span></span><br><span class="line">    .quad   <span class="number">0</span></span><br><span class="line">    .quad   L_OBJC_CLASS_NAME_</span><br><span class="line">    .quad   l_OBJC_$_INSTANCE_METHODS_MySuperClass</span><br><span class="line">    .quad   <span class="number">0</span></span><br><span class="line">    .quad   <span class="number">0</span></span><br><span class="line">    .quad   <span class="number">0</span></span><br><span class="line">    .quad   <span class="number">0</span></span><br><span class="line">    .size   l_OBJC_CLASS_RO_$_MySuperClass, <span class="number">72</span></span><br><span class="line"></span><br><span class="line">    .type   OBJC_CLASS_$_MySuperClass,@object <span class="meta"># @<span class="meta-string">"OBJC_CLASS_$_MySuperClass"</span></span></span><br><span class="line">    .section    <span class="string">"__DATA, __objc_data"</span>,<span class="string">"aw"</span>,@progbits</span><br><span class="line">    .globl  OBJC_CLASS_$_MySuperClass</span><br><span class="line">    .align  <span class="number">8</span></span><br><span class="line">OBJC_CLASS_$_MySuperClass:</span><br><span class="line">    .quad   OBJC_METACLASS_$_MySuperClass</span><br><span class="line">    .quad   OBJC_CLASS_$_Object</span><br><span class="line">    .quad   _objc_empty_cache</span><br><span class="line">    .quad   _objc_empty_vtable</span><br><span class="line">    .quad   l_OBJC_CLASS_RO_$_MySuperClass</span><br><span class="line">    .size   OBJC_CLASS_$_MySuperClass, <span class="number">40</span></span><br></pre></td></tr></table></figure><br>在编译得到的汇编代码中，不同的代码段对应ObjectiveC runtime中不同类型的数据结构。</p>
+<p><code>main</code>函数通常是我们认为的程序的入口，但是实际上，在进程刚刚开始执行时，<code>_objc_init</code>函数会在<code>main</code>函数之前被调用，在<code>_objc_init</code>函数中我们看到如下语句<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dyld_register_image_state_change_handler(dyld_image_state_bound,</span><br><span class="line">                                             <span class="number">1</span><span class="comment">/*batch*/</span>, &amp;map_images);</span><br></pre></td></tr></table></figure><br>即在<code>_objc_init</code>时，runtime调用了<code>map_images</code>方法，<code>map_images</code>中又调用了<code>map_images_nolock</code>方法，继续下去我们会发现，程序调用了名为<code>realizeAllClasses</code>的方法，并最终在<code>static Class realizeClass(Class cls)</code>中具体实现了对某一个类的加载。</p>
+<p>在<code>static Class realizeClass(Class cls)</code>中，系统实现了对类<code>cls</code>的初始化，包括为类对象分配空间，生成类的函数列表等。在这里我们以Category的实现为例。</p>
+<p>我们可以在<code>static void methodizeClass(Class cls)</code>方法中看到对<code>static void attachCategoryMethods</code>的调用，这个方法就是我们要找的category的实现原理所在：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> </span><br><span class="line">attachCategoryMethods(Class cls, category_list *cats, <span class="keyword">bool</span> flushCaches)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!cats) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (PrintReplacedMethods) printReplacements(cls, cats);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">bool</span> isMeta = cls-&gt;isMetaClass();</span><br><span class="line">    method_list_t **mlists = (method_list_t **)</span><br><span class="line">        _malloc_internal(cats-&gt;count * <span class="keyword">sizeof</span>(*mlists));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Count backwards through cats to get newest categories first</span></span><br><span class="line">    <span class="keyword">int</span> mcount = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> i = cats-&gt;count;</span><br><span class="line">    <span class="built_in">BOOL</span> fromBundle = <span class="literal">NO</span>;</span><br><span class="line">    <span class="keyword">while</span> (i--) &#123;</span><br><span class="line">        method_list_t *mlist = cat_method_list(cats-&gt;list[i].cat, isMeta);</span><br><span class="line">        <span class="keyword">if</span> (mlist) &#123;</span><br><span class="line">            mlists[mcount++] = mlist;</span><br><span class="line">            fromBundle |= cats-&gt;list[i].fromBundle;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    attachMethodLists(cls, mlists, mcount, <span class="literal">NO</span>, fromBundle, flushCaches);</span><br><span class="line"></span><br><span class="line">    _free_internal(mlists);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>函数第一个参数为当前正加载的类，第二个参数为对应类的所有的category的实现，在方法中，程序遍历了所有的category，将所有的在category中定义的函数，放在<code>mlists</code>中，然后利用<code>attachMethodLists</code>方法将category中添加的方法整合到类的method list当中，从而实现了category这一语言特性。</p>
+<p>代码并不复杂，关键是我们在月的的过程中要慢慢找到函数间的调用层次，类加载这一部分的函数调用层次如下所示：<br><img src="https://raw.githubusercontent.com/Charlesjean/cn/master/source/_posts/Category.png" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/04/13/2014-04-13-c-plus-plus-11-move-semantic/" rel="next" title="C++11之Move 构造函数和Move 赋值操作符">
+                <i class="fa fa-chevron-left"></i> C++11之Move 构造函数和Move 赋值操作符
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/04/19/2014-04-19-ios-concurrent-program1/" rel="prev" title="iOS并行开发之GCD的使用">
+                iOS并行开发之GCD的使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Charles" />
+          <p class="site-author-name" itemprop="name">Charles</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Charles</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

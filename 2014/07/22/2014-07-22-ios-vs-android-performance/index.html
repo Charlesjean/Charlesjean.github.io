@@ -1,0 +1,618 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS, android, iOS vs android, app stuck, app optimization, hardware acceleration" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="网上很多人讨论Android手机使用起来没有iOS流畅的原因，之前在国外的论坛和Google+上见到过相关的讨论，记得还有google的Android技术负责人对相关的技术进行了澄清，在知乎上我们也可以看到类似的讨论。这里我们从不同的方面说一下，我们“感觉”Android不够流畅的原因。首先，我想强调一下，android系统在某些机器上，或者某些app不够流畅，并不是由于Android存在某些技术">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈Android使用起来不如iOS流畅的原因">
+<meta property="og:url" content="http://yoursite.com/2014/07/22/2014-07-22-ios-vs-android-performance/index.html">
+<meta property="og:site_name" content="KISS">
+<meta property="og:description" content="网上很多人讨论Android手机使用起来没有iOS流畅的原因，之前在国外的论坛和Google+上见到过相关的讨论，记得还有google的Android技术负责人对相关的技术进行了澄清，在知乎上我们也可以看到类似的讨论。这里我们从不同的方面说一下，我们“感觉”Android不够流畅的原因。首先，我想强调一下，android系统在某些机器上，或者某些app不够流畅，并不是由于Android存在某些技术">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/g+.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/weibo.png">
+<meta property="og:updated_time" content="2016-06-18T05:31:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈Android使用起来不如iOS流畅的原因">
+<meta name="twitter:description" content="网上很多人讨论Android手机使用起来没有iOS流畅的原因，之前在国外的论坛和Google+上见到过相关的讨论，记得还有google的Android技术负责人对相关的技术进行了澄清，在知乎上我们也可以看到类似的讨论。这里我们从不同的方面说一下，我们“感觉”Android不够流畅的原因。首先，我想强调一下，android系统在某些机器上，或者某些app不够流畅，并不是由于Android存在某些技术">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/g+.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2014/07/22/2014-07-22-ios-vs-android-performance/"/>
+
+  <title> 浅谈Android使用起来不如iOS流畅的原因 | KISS </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">KISS</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">尊重 谦虚 宽容</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                浅谈Android使用起来不如iOS流畅的原因
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-07-22T20:51:33+08:00" content="2014-07-22">
+              2014-07-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/杂谈/" itemprop="url" rel="index">
+                    <span itemprop="name">杂谈</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>网上很多人讨论Android手机使用起来没有iOS流畅的原因，之前在国外的论坛和Google+上见到过相关的讨论，记得还有google的Android技术负责人对相关的技术进行了澄清，在<a href="http://www.zhihu.com/question/24541467/noti-answers?group_id=578107108" target="_blank" rel="external">知乎</a>上我们也可以看到类似的讨论。这里我们从不同的方面说一下，我们“感觉”Android不够流畅的原因。首先，我想强调一下，android系统在某些机器上，或者某些app不够流畅，并不是由于Android存在某些技术缺陷导致的，网上说的“没有硬件加速”、“屏幕反应延迟大”之类的原因都是不成立的。Android早就支持了硬件加速，如果真的是手机屏幕灵敏度导致了使用上的不流畅，那只能说你买的手机太挫了。</p>
+<a id="more"></a>
+<p>####原因一：Android手机配置良莠不齐<br><br>这个原因大家很容易明白，跟我们使用的电脑一样，你512的内存和别人2G的内存肯定是不能比的。iOS设备的型号只有Apple家生产的那几款，内存起码都是1G。而Android生产厂商很多，即使像HTC这种大厂家，也会有内存512安装android4.0系统的机器（普通app的可用内存最多不过360M），这种机器怎么可能运行流畅？因此，如果你想对比两个系统的流畅度，起码用配置差不多的设备比较，比如Android的Nexus 5和 iPhone5s。</p>
+<!-- more -->
+<p>####原因二：很多Android App的性能没有做到足够的优化<br>在iOS开发当中，性能是每一个开发者必须重视的，iOS也提供了很友好的开发工具来帮助开发者发现app性能的瓶颈，包括内存使用，动画帧率，时间分析等。在Android上，系统也提供了类似的性能分析工具，集成在DDMS中，但是很多的app，甚至是比较有名的产品，都没有足够的重视app的性能优化。<br><br>提到Android系统流畅度，很多人就会提出硬件加速，其实在android4.0.x版本中就已经有了硬件加速，并且是默认自动开启的，系统还自带了工具（设置-&gt;开发者选项-&gt;调试GPU过度绘制），使开发者能够检查是否有不可容忍的GPU重绘。下图是Google+的在打开<b>调试GPU过度重绘</b>后的情况（所谓GPU过度重绘，是指GPU针对一个像素绘制了多次，相当于做了不必要的工作，因此重绘越少越好）：<br><br><img src="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/g+.png" alt=""><br><br>图中绿色代表重绘次数比较少的区域，红色代表重绘次数比较多的区域，优化的目的应该是使重绘的区域及次数越少越好。因此可以看出，google+优化的很不错，我们实际在使用中也会发现，滚动起来相当流畅，绝对超过了iOS的流畅度（在Nexus5上的体验）。<br><br>看了google+的效果之后，我们再看看新浪微博的效果：<br><br><img src="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/weibo.png" alt=""><br><br>我们看到微博的界面没有出现绿色或者红色，这是为什么呢？<b>因为微博客户端根本没有开启硬件加速</b>,由于硬件加速是自动开启的，因此猜测是微博主动关闭了硬件加速功能。<br><br>当然app开发者有自己的考量，可能由于某些技术原因关闭赢家加速是必要的，在这里只是想举例说明，我们平常感觉到android app不流畅的很大原因是app本身没有做足够的优化，而不是android系统本身的技术问题。</p>
+<p>####原因三：Java虚拟机的局限<br>可以说之前提到了两点原因并不是Android系统本身的原因，只有这第三点才可以说是系统的原因，但是我相信，java虚拟机的问题并不是导致app不够流畅的主要原因（因为google的app，像google+等就完全没有不流畅的问题）。<br>Java虚拟机的问题可以分为两点：</p>
+<ul>
+<li>虚拟机的垃圾回收机制</li>
+<li>java代码的运行机制</li>
+</ul>
+<p>由于java资源是由系统的垃圾回收机制来自动处理的，因此垃圾回收机制在早期的android版本中影响了系统的性能，但是随着android的进化，现在的垃圾回收机制已经可以在背景线程并行执行，并不会阻塞UI线程，所以已经有了很大的改善。<br><br>java为了实现跨平台的效果，代码是编译为字节码而非机器代码，待程序执行时，虚拟机才会将字节码翻译为机器代码，字节码的运行效率是低于机器代码的效率。但是在android L中，新的ART（Android Runtime）也已经改进了这一点，系统会在app安装时将字节码转化为机器码，从而其高app运行时的速度。</p>
+<p>####后续<br>我之前用的微博版本是4.3.0， 现在最新版本上面已经开启了硬件加速。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/07/19/2014-07-19-java-concurrency-programming-and-volatile-keyword/" rel="next" title="java并发编程之Volatile关键字">
+                <i class="fa fa-chevron-left"></i> java并发编程之Volatile关键字
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/08/04/2014-08-04-android-scroller-usage/" rel="prev" title="Android中为自定义的View添加滚动效果">
+                Android中为自定义的View添加滚动效果 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Charles" />
+          <p class="site-author-name" itemprop="name">Charles</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Charles</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

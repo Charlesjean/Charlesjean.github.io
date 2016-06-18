@@ -1,0 +1,625 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android, Dalvik, Android runtime, dalvik vs art" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="长久以来Android给人们的印象都是反应速度慢，不够流畅，这也是我之前对android的印象，在接触了Android4.4、从事了android的开发后，我觉得Android之所以给人们不够流畅的原因有以下几点：
+
+与iOS不同的是，Android手机型号众多，配置更是各种各样，以我之前用的HTC手机为例，2012年出厂的手机装配了Android4.0的系统，但是系统的内存却只有512M，开机后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android ART 与 Dalvik虚拟机比较">
+<meta property="og:url" content="http://yoursite.com/2014/05/26/2014-05-26-android-art-vs-dalvik/index.html">
+<meta property="og:site_name" content="KISS">
+<meta property="og:description" content="长久以来Android给人们的印象都是反应速度慢，不够流畅，这也是我之前对android的印象，在接触了Android4.4、从事了android的开发后，我觉得Android之所以给人们不够流畅的原因有以下几点：
+
+与iOS不同的是，Android手机型号众多，配置更是各种各样，以我之前用的HTC手机为例，2012年出厂的手机装配了Android4.0的系统，但是系统的内存却只有512M，开机后">
+<meta property="og:updated_time" content="2016-06-18T05:41:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android ART 与 Dalvik虚拟机比较">
+<meta name="twitter:description" content="长久以来Android给人们的印象都是反应速度慢，不够流畅，这也是我之前对android的印象，在接触了Android4.4、从事了android的开发后，我觉得Android之所以给人们不够流畅的原因有以下几点：
+
+与iOS不同的是，Android手机型号众多，配置更是各种各样，以我之前用的HTC手机为例，2012年出厂的手机装配了Android4.0的系统，但是系统的内存却只有512M，开机后">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2014/05/26/2014-05-26-android-art-vs-dalvik/"/>
+
+  <title> Android ART 与 Dalvik虚拟机比较 | KISS </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">KISS</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">尊重 谦虚 宽容</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android ART 与 Dalvik虚拟机比较
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-05-26T21:39:15+08:00" content="2014-05-26">
+              2014-05-26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>长久以来Android给人们的印象都是反应速度慢，不够流畅，这也是我之前对android的印象，在接触了Android4.4、从事了android的开发后，我觉得Android之所以给人们不够流畅的原因有以下几点：</p>
+<ul>
+<li>与iOS不同的是，Android手机型号众多，配置更是各种各样，以我之前用的HTC手机为例，2012年出厂的手机装配了Android4.0的系统，但是系统的内存却只有512M，开机后app的可用内存只有可怜的360M，这种配置的手机怎么可能有好的表现，不卡才怪。而iOS的手机型号固定，配置起码都是1G的内存，运行流畅是必然的。</li>
+<li>Android市场对app的审核不如iOS严格，致使Android App的质量良莠不齐，很多开发者并没有对app进行足够的性能优化，成功如微博客户端，在滑动的时候仍不够流畅，其他的app质量可想而知。</li>
+<li>最根本的一点是，Dalvik虚拟机在作怪。</li>
+</ul>
+<p>大家都知道，Java为了达到跨平台的目的，在编译时将源代码转化为了字节码，Android的Dalvik虚拟机亦是如此，在我们运行app时，系统必须将字节码转换为机器码，然后运行，这种机制就是Dalvik使用的JIT（Just-in-time compilation）机制。在运行时才将字节码转化为机器码，这可以说是android app不够流畅的根本原因，因为我们无法消除将字节码转化为机器码的这部分时间。</p>
+<p>Android4.4引入了ART，即Android Runtime，与Dalvik不同的是，ART在我们第一次安装app时，会自动将app转化为机器码，从而确保了app运行时的时间（去除了JIT compile的时间），因此开启ART后，android app流畅度会有一个不错的提升。但是目前，ART有如下问题：</p>
+<ul>
+<li>某些app在ART下无法运行。这应该是针对一小部分app，因为我目前为止在我的手机上没有发现这个问题</li>
+<li>由于在首次安装时需要将app转化为机器码，因此app的安装时间会有所增加。我在使用过程中也没有明显的感觉到这一点，可以说这点不会妨碍一般的用户。</li>
+</ul>
+<p>可以说ART很好的解决了android不够流畅的问题，并且对于普通用户，并没有带来使用的负面影响，况且现在ART还在进一步的改进和开发当中，相信以后在流畅度，安装时间等各个方面会做的更好。 对于我们开发者，ART也带来了实际的好处。</p>
+<p>相信很多开发者会遇到一个问题，就是在Android中，如果你的ViewGroup嵌套层次太多，那么很可能会遇到StackOverflowError这个运行时错误，产生这个错误的原因是由于View Hierarchy在绘制过程中，函数调用的深度超出了系统主线程的Stack frame。在Android4.4中，Dalvik的UI线程的Stack frame只有16K，过多的嵌套很容易造成StackOverflowError，而对于程序，很难从根本上解决这个问题（优化view hierarchy被认为是唯一可行的方法，但实用性却是有限的）。我在试验中发现，ART已经很好的解决了这个问题，即使view group的嵌套达到了60层，仍然不会出现在Dalvik中的crash。</p>
+<p>由此可见，ART正在试图解决一些Dalvik中存在的性能等各个方面的问题，或许Android5.0的时候，ART能够成型，那Android必然会向前迈一大步，用户体验可以得到很大的改观（当然像之前说的HTC的那种奇葩配置的机器，永远不可能有好的流畅度）。</p>
+<p>由于Android生态的多样性，各个生产商的Android都有很大的不同，我们应该通过比较来区分优劣，Android有自己的特点，包括Android App的设计原则都不同于iOS，作为Android用户，我们需要的不是iOS，而是Android自己的个性，Android的特色。越来越对Android充满信心，相信Android很快可以做的更好。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/05/22/2014-05-22-nexus5-windows-debug/" rel="next" title="解决Windows下Android Device Manager无法找到Nexus5">
+                <i class="fa fa-chevron-left"></i> 解决Windows下Android Device Manager无法找到Nexus5
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/06/08/2014-06-08-swift-learning-1/" rel="prev" title="初始Apple Swift语言">
+                初始Apple Swift语言 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Charles" />
+          <p class="site-author-name" itemprop="name">Charles</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Charles</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
