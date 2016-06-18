@@ -91,10 +91,10 @@
 <meta property="og:site_name" content="KISS">
 <meta property="og:description" content="Fragment is introduced in android API Level 11, it is designed for more feasible GUI layout.If you want to design UI layout like Master-Detail Application in iOS, fragment is very suitable. We can use">
 <meta property="og:image" content="http://developer.android.com/images/fundamentals/fragments.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/Appscreen.jpg">
-<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/ToFragmentOne.jpg">
-<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/BackToMainMenu.jpg">
-<meta property="og:updated_time" content="2016-06-18T06:10:33.000Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/blogimg/master/Appscreen.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/blogimg/master/ToFragmentOne.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/blogimg/master/BackToMainMenu.jpg">
+<meta property="og:updated_time" content="2016-06-18T13:38:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Learning android fragment">
 <meta name="twitter:description" content="Fragment is introduced in android API Level 11, it is designed for more feasible GUI layout.If you want to design UI layout like Master-Detail Application in iOS, fragment is very suitable. We can use">
@@ -322,12 +322,12 @@
       
         <p>Fragment is introduced in android API Level 11, it is designed for more feasible GUI layout.If you want to design UI layout like Master-Detail Application in iOS, fragment is very suitable. We can use a list fragment on the left to display some item, when user select on item, we will show the detail information on the right fragment. Layout of Master-Detail Application is like the left part of the below image:<br><br><img src="http://developer.android.com/images/fundamentals/fragments.png" alt="Master-Detail Application"> </p>
 <p>Fragment is also very useful for smart-phones app. When we need to change the content of the screen, we don’t need to use a new <code>Activity</code>, instead we can use fragments for app screen switches, which is much more light-weight than switches between Activities.</p>
-<p>Just like Activity, fragment also has lifecycle states, and it’s very important for you to know when the state of a fragment will be change, and will change to which state, before you use fragments. I provided a very simple project <a href="https://github.com/Charlesjean/FragmentTest" target="_blank" rel="external">here</a>, which contains the basic fragment usage. The screen of the simple project, and how screens switch is indicated below:<br><br><img src="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/Appscreen.jpg" alt="App Screen"></p>
+<p>Just like Activity, fragment also has lifecycle states, and it’s very important for you to know when the state of a fragment will be change, and will change to which state, before you use fragments. I provided a very simple project <a href="https://github.com/Charlesjean/FragmentTest" target="_blank" rel="external">here</a>, which contains the basic fragment usage. The screen of the simple project, and how screens switch is indicated below:<br><br><img src="https://raw.githubusercontent.com/Charlesjean/blogimg/master/Appscreen.jpg" alt="App Screen"></p>
 <a id="more"></a>
 <p>All the three screens are fragments which are in the same activity, when we press buttons on the first scree, screen will change. From the output of logcat, we can see lifecycle state change of each fragments:</p>
 <ul>
-<li>when we press <code>To Fragment One</code>, the screen will chagne from <code>MainMenuFragment</code> to ‘FragmentOne’, and the output of logcat is:<br><br><img src="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/ToFragmentOne.jpg" alt="output"><br><br>When we switch to a new fragment, the old fragment goes to <code>onPause</code>, and the new fragment will be instanced, with the following lifecycle state:onAttach -&gt;　onCreate -&gt; onCreateView -&gt; onActivityChanged -&gt; onStart -&gt; onResume. </li>
-<li>when we press back button, screen will change from ‘FragmentOne ‘ back to ‘MainMenuFragment’ again, the output of logcat is:<br><br><img src="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/BackToMainMenu.jpg" alt="output"><br><br>and the lifecycle states of ‘FragmentOne’ is: onPause -&gt; onStop -&gt; onDestroyView -&gt; onDestroy -&gt; onDetach; and only <code>onCreateView</code> and <code>onResume</code> of <code>MainMenuFragment</code>will be called.</li>
+<li>when we press <code>To Fragment One</code>, the screen will chagne from <code>MainMenuFragment</code> to ‘FragmentOne’, and the output of logcat is:<br><br><img src="https://raw.githubusercontent.com/Charlesjean/blogimg/master/ToFragmentOne.jpg" alt="output"><br><br>When we switch to a new fragment, the old fragment goes to <code>onPause</code>, and the new fragment will be instanced, with the following lifecycle state:onAttach -&gt;　onCreate -&gt; onCreateView -&gt; onActivityChanged -&gt; onStart -&gt; onResume. </li>
+<li>when we press back button, screen will change from ‘FragmentOne ‘ back to ‘MainMenuFragment’ again, the output of logcat is:<br><br><img src="https://raw.githubusercontent.com/Charlesjean/blogimg/master/BackToMainMenu.jpg" alt="output"><br><br>and the lifecycle states of ‘FragmentOne’ is: onPause -&gt; onStop -&gt; onDestroyView -&gt; onDestroy -&gt; onDetach; and only <code>onCreateView</code> and <code>onResume</code> of <code>MainMenuFragment</code>will be called.</li>
 </ul>
 <p>From the operations above , we can get the below conclusion:</p>
 <ul>

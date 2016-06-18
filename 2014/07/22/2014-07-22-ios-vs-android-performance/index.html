@@ -90,13 +90,13 @@
 <meta property="og:url" content="http://yoursite.com/2014/07/22/2014-07-22-ios-vs-android-performance/index.html">
 <meta property="og:site_name" content="KISS">
 <meta property="og:description" content="网上很多人讨论Android手机使用起来没有iOS流畅的原因，之前在国外的论坛和Google+上见到过相关的讨论，记得还有google的Android技术负责人对相关的技术进行了澄清，在知乎上我们也可以看到类似的讨论。这里我们从不同的方面说一下，我们“感觉”Android不够流畅的原因。首先，我想强调一下，android系统在某些机器上，或者某些app不够流畅，并不是由于Android存在某些技术">
-<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/g+.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/weibo.png">
-<meta property="og:updated_time" content="2016-06-18T05:31:38.000Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/blogimg/master/g%2B.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/blogimg/master/weibo.png">
+<meta property="og:updated_time" content="2016-06-18T13:49:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈Android使用起来不如iOS流畅的原因">
 <meta name="twitter:description" content="网上很多人讨论Android手机使用起来没有iOS流畅的原因，之前在国外的论坛和Google+上见到过相关的讨论，记得还有google的Android技术负责人对相关的技术进行了澄清，在知乎上我们也可以看到类似的讨论。这里我们从不同的方面说一下，我们“感觉”Android不够流畅的原因。首先，我想强调一下，android系统在某些机器上，或者某些app不够流畅，并不是由于Android存在某些技术">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/g+.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Charlesjean/blogimg/master/g%2B.png">
 
 
 
@@ -322,7 +322,7 @@
 <a id="more"></a>
 <p>####原因一：Android手机配置良莠不齐<br><br>这个原因大家很容易明白，跟我们使用的电脑一样，你512的内存和别人2G的内存肯定是不能比的。iOS设备的型号只有Apple家生产的那几款，内存起码都是1G。而Android生产厂商很多，即使像HTC这种大厂家，也会有内存512安装android4.0系统的机器（普通app的可用内存最多不过360M），这种机器怎么可能运行流畅？因此，如果你想对比两个系统的流畅度，起码用配置差不多的设备比较，比如Android的Nexus 5和 iPhone5s。</p>
 <!-- more -->
-<p>####原因二：很多Android App的性能没有做到足够的优化<br>在iOS开发当中，性能是每一个开发者必须重视的，iOS也提供了很友好的开发工具来帮助开发者发现app性能的瓶颈，包括内存使用，动画帧率，时间分析等。在Android上，系统也提供了类似的性能分析工具，集成在DDMS中，但是很多的app，甚至是比较有名的产品，都没有足够的重视app的性能优化。<br><br>提到Android系统流畅度，很多人就会提出硬件加速，其实在android4.0.x版本中就已经有了硬件加速，并且是默认自动开启的，系统还自带了工具（设置-&gt;开发者选项-&gt;调试GPU过度绘制），使开发者能够检查是否有不可容忍的GPU重绘。下图是Google+的在打开<b>调试GPU过度重绘</b>后的情况（所谓GPU过度重绘，是指GPU针对一个像素绘制了多次，相当于做了不必要的工作，因此重绘越少越好）：<br><br><img src="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/g+.png" alt=""><br><br>图中绿色代表重绘次数比较少的区域，红色代表重绘次数比较多的区域，优化的目的应该是使重绘的区域及次数越少越好。因此可以看出，google+优化的很不错，我们实际在使用中也会发现，滚动起来相当流畅，绝对超过了iOS的流畅度（在Nexus5上的体验）。<br><br>看了google+的效果之后，我们再看看新浪微博的效果：<br><br><img src="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/weibo.png" alt=""><br><br>我们看到微博的界面没有出现绿色或者红色，这是为什么呢？<b>因为微博客户端根本没有开启硬件加速</b>,由于硬件加速是自动开启的，因此猜测是微博主动关闭了硬件加速功能。<br><br>当然app开发者有自己的考量，可能由于某些技术原因关闭赢家加速是必要的，在这里只是想举例说明，我们平常感觉到android app不流畅的很大原因是app本身没有做足够的优化，而不是android系统本身的技术问题。</p>
+<p>####原因二：很多Android App的性能没有做到足够的优化<br>在iOS开发当中，性能是每一个开发者必须重视的，iOS也提供了很友好的开发工具来帮助开发者发现app性能的瓶颈，包括内存使用，动画帧率，时间分析等。在Android上，系统也提供了类似的性能分析工具，集成在DDMS中，但是很多的app，甚至是比较有名的产品，都没有足够的重视app的性能优化。<br><br>提到Android系统流畅度，很多人就会提出硬件加速，其实在android4.0.x版本中就已经有了硬件加速，并且是默认自动开启的，系统还自带了工具（设置-&gt;开发者选项-&gt;调试GPU过度绘制），使开发者能够检查是否有不可容忍的GPU重绘。下图是Google+的在打开<b>调试GPU过度重绘</b>后的情况（所谓GPU过度重绘，是指GPU针对一个像素绘制了多次，相当于做了不必要的工作，因此重绘越少越好）：<br><br><img src="https://raw.githubusercontent.com/Charlesjean/blogimg/master/g%2B.png" alt=""><br><br>图中绿色代表重绘次数比较少的区域，红色代表重绘次数比较多的区域，优化的目的应该是使重绘的区域及次数越少越好。因此可以看出，google+优化的很不错，我们实际在使用中也会发现，滚动起来相当流畅，绝对超过了iOS的流畅度（在Nexus5上的体验）。<br><br>看了google+的效果之后，我们再看看新浪微博的效果：<br><br><img src="https://raw.githubusercontent.com/Charlesjean/blogimg/master/weibo.png" alt=""><br><br>我们看到微博的界面没有出现绿色或者红色，这是为什么呢？<b>因为微博客户端根本没有开启硬件加速</b>,由于硬件加速是自动开启的，因此猜测是微博主动关闭了硬件加速功能。<br><br>当然app开发者有自己的考量，可能由于某些技术原因关闭赢家加速是必要的，在这里只是想举例说明，我们平常感觉到android app不流畅的很大原因是app本身没有做足够的优化，而不是android系统本身的技术问题。</p>
 <p>####原因三：Java虚拟机的局限<br>可以说之前提到了两点原因并不是Android系统本身的原因，只有这第三点才可以说是系统的原因，但是我相信，java虚拟机的问题并不是导致app不够流畅的主要原因（因为google的app，像google+等就完全没有不流畅的问题）。<br>Java虚拟机的问题可以分为两点：</p>
 <ul>
 <li>虚拟机的垃圾回收机制</li>

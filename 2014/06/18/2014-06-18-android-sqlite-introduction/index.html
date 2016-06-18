@@ -102,8 +102,8 @@
 可以免费使用
 
 无疑是SQLite成为移动平台首选的主要原因。作为数据库Library，SQLite的大小不到500">
-<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/sqlite_type.png">
-<meta property="og:updated_time" content="2016-06-18T05:40:40.000Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/Charlesjean/blogimg/master/sqlite_type.png">
+<meta property="og:updated_time" content="2016-06-18T13:44:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Sqlite（一）">
 <meta name="twitter:description" content="SQLite 概述与PC比较，移动平台在可用内存和处理器计算能力方面仍有不足，SQLite作为一个轻量级的数据库，由于自身体积小巧，占用内存少等原因成为了诸多移动系统支持的主要数据库，Android，iOS，Blackberry都对SQLite有很好的支持。
@@ -113,7 +113,7 @@
 可以免费使用
 
 无疑是SQLite成为移动平台首选的主要原因。作为数据库Library，SQLite的大小不到500">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/sqlite_type.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Charlesjean/blogimg/master/sqlite_type.png">
 
 
 
@@ -352,7 +352,7 @@
 <li>SQLite是跨平台的（64位与32位，大端与小端系统）<a id="more"></a>
 <h4 id="SQLite没有Server的概念"><a href="#SQLite没有Server的概念" class="headerlink" title="SQLite没有Server的概念"></a>SQLite没有Server的概念</h4>与其说SQLite是数据库系统，不如说SQLite是用于操作磁盘文件的库文件，我们在使用中不需要对数据库进行配置，没有用户权限以及访问权限等限制，因此SQLite的使用更类似于fwrite()操作，无须JDBC等支持。</li>
 </ul>
-<h4 id="SQLite的数据类型"><a href="#SQLite的数据类型" class="headerlink" title="SQLite的数据类型"></a>SQLite的数据类型</h4><p>下表中列出来SQLite支持的数据类型：<br><img src="https://raw.githubusercontent.com/Charlesjean/Charlesjean.github.io/source/source/_posts/sqlite_type.png" alt=""></p>
+<h4 id="SQLite的数据类型"><a href="#SQLite的数据类型" class="headerlink" title="SQLite的数据类型"></a>SQLite的数据类型</h4><p>下表中列出来SQLite支持的数据类型：<br><img src="https://raw.githubusercontent.com/Charlesjean/blogimg/master/sqlite_type.png" alt=""></p>
 <p>在支持的类型中缺少常用的DATETIME与Boolean， boolean我们可以使用INTEGER来代替，在接下来的代码中，我会示意如果模拟DATETIME类型。</p>
 <h4 id="SQLite对字段长度没有限制"><a href="#SQLite对字段长度没有限制" class="headerlink" title="SQLite对字段长度没有限制"></a>SQLite对字段长度没有限制</h4><p>不想SQL Server等数据库，支持VARCHAR等类型，限制了表中某列字段的长度，SQLite中所有的String都是TEXT类型，而该类型并没有字符串长度的限制，因此我们在使用时需要在代码中管理对字段长度的限制。</p>
 <h4 id="Android中的SQLite"><a href="#Android中的SQLite" class="headerlink" title="Android中的SQLite"></a>Android中的SQLite</h4><p>Android默认支持SQLite，在android.database.sqlit包中包含了所有的与SQLite相关的类。SQLite的数据库文件保存在/data/data/{package-name}/databases目录下。</p>
